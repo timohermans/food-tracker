@@ -1,5 +1,4 @@
-﻿using App.Data;
-using Core.Data;
+﻿using Core.Data;
 using Core.Data.Types;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;

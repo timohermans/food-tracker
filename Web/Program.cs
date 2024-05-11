@@ -46,7 +46,7 @@ scheduler.Schedule<ProductScrapeUseCase>()
     .EveryMinute()
     .PreventOverlapping(nameof(ProductScrapeUseCase));
 
-if (true || env.IsDevelopment())
+if (env.IsDevelopment())
 {
     var queue = app.Services.GetRequiredService<IQueue>();
     queue.QueueCancellableInvocable<ProductsFindToScrapeUseCase>();
