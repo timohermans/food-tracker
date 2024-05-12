@@ -41,3 +41,6 @@ steps:
     projects: '$(project)'
     arguments: '-c $(buildConfiguration) --no-restore --no-build -o $(artifactPath)'
     modifyOutputPath: false
+
+- publish: '$(artifactPath)'
+  artifact: Web
