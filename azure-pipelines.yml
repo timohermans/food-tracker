@@ -31,7 +31,7 @@ steps:
   inputs:
     command: 'build'
     projects: '$(project)'
-    arguments: '--no-restore'
+    arguments: '-c $(buildConfiguration) --no-restore'
 
 - task: DotNetCoreCLI@2
   displayName: 'Publish'
@@ -39,5 +39,5 @@ steps:
     command: 'publish'
     publishWebProjects: false
     projects: '$(project)'
-    arguments: '--no-restore --no-build -o $(artifactPath)'
+    arguments: '-c $(buildConfiguration) --no-restore --no-build -o $(artifactPath)'
     modifyOutputPath: false
