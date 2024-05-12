@@ -14,6 +14,7 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  artifactPath: '$(System.DefaultWorkingDirectory)/drop'
   project: './Web/Web.csproj'
 
 steps:
@@ -38,4 +39,5 @@ steps:
     command: 'publish'
     publishWebProjects: false
     projects: '$(project)'
-    arguments: '--no-restore --no-build'
+    arguments: '--no-restore --no-build -o $(artifactPath)'
+    modifyOutputPath: false
