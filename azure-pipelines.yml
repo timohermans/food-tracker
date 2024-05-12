@@ -8,6 +8,7 @@ trigger:
 
 pool:
   vmImage: 'windows-latest'
+  name: Default
 
 variables:
   solution: '**/*.sln'
@@ -17,6 +18,7 @@ variables:
 
 steps:
 - task: DotNetCoreCLI@2
+  displayName: 'Restore'
   inputs:
     command: 'restore'
     projects: '$(project)'
@@ -24,12 +26,14 @@ steps:
     feedsToUse: 'select'
 
 - task: DotNetCoreCLI@2
+  displayName: 'Build'
   inputs:
     command: 'build'
     projects: '$(project)'
     arguments: '--no-restore'
 
 - task: DotNetCoreCLI@2
+  displayName: 'Publish'
   inputs:
     command: 'publish'
     publishWebProjects: false
