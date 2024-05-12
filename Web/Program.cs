@@ -38,19 +38,19 @@ builder.Services.AddSQLServerCache(config.GetConnectionString("Default"));
 var app = builder.Build();
 
 var scheduler = app.Services.GetRequiredService<IScheduler>();
-scheduler.Schedule<ProductsFindToScrapeUseCase>()
-    .DailyAt(0, 0)
-    .PreventOverlapping(nameof(ProductsFindToScrapeUseCase));
+// scheduler.Schedule<ProductsFindToScrapeUseCase>()
+//     .DailyAt(0, 0)
+//     .PreventOverlapping(nameof(ProductsFindToScrapeUseCase));
 
 scheduler.Schedule<ProductScrapeUseCase>()
     .EveryMinute()
     .PreventOverlapping(nameof(ProductScrapeUseCase));
 
-if (env.IsDevelopment())
-{
+// if (env.IsDevelopment())
+// {
     var queue = app.Services.GetRequiredService<IQueue>();
     queue.QueueCancellableInvocable<ProductsFindToScrapeUseCase>();
-}
+// }
 
 // Configure the HTTP request pipeline.
 
