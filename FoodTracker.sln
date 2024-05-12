@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{7E54A612-B924-467A-A400-5A6E12428790}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scraper", "Scraper\Scraper.csproj", "{A8623073-8303-4CAF-92E3-C1DDFA6CCC9A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{7E54A612-B924-467A-A400-5A6E12428790}.Release|x64.Build.0 = Release|Any CPU
 		{7E54A612-B924-467A-A400-5A6E12428790}.Release|x86.ActiveCfg = Release|Any CPU
 		{7E54A612-B924-467A-A400-5A6E12428790}.Release|x86.Build.0 = Release|Any CPU
+		{A8623073-8303-4CAF-92E3-C1DDFA6CCC9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8623073-8303-4CAF-92E3-C1DDFA6CCC9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8623073-8303-4CAF-92E3-C1DDFA6CCC9A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A8623073-8303-4CAF-92E3-C1DDFA6CCC9A}.Debug|x64.Build.0 = Debug|Any CPU
+		{A8623073-8303-4CAF-92E3-C1DDFA6CCC9A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A8623073-8303-4CAF-92E3-C1DDFA6CCC9A}.Debug|x86.Build.0 = Debug|Any CPU
+		{A8623073-8303-4CAF-92E3-C1DDFA6CCC9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8623073-8303-4CAF-92E3-C1DDFA6CCC9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8623073-8303-4CAF-92E3-C1DDFA6CCC9A}.Release|x64.ActiveCfg = Release|Any CPU
+		{A8623073-8303-4CAF-92E3-C1DDFA6CCC9A}.Release|x64.Build.0 = Release|Any CPU
+		{A8623073-8303-4CAF-92E3-C1DDFA6CCC9A}.Release|x86.ActiveCfg = Release|Any CPU
+		{A8623073-8303-4CAF-92E3-C1DDFA6CCC9A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

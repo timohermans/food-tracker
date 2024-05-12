@@ -1,11 +1,12 @@
 ﻿using Coravel.Invocable;
 using Coravel.Queuing.Interfaces;
+using Core.Data;
+using Core.Data.Types;
 using Microsoft.EntityFrameworkCore;
 using System.Xml;
 using System.Xml.Linq;
-using Web.Data;
 
-namespace Web.UseCases;
+namespace Scraper.UseCases;
 
 public class ProductsFindToScrapeUseCase(FoodContext db, ILogger<ProductsFindToScrapeUseCase> logger) : IInvocable, ICancellableTask
 {
@@ -17,7 +18,7 @@ public class ProductsFindToScrapeUseCase(FoodContext db, ILogger<ProductsFindToS
 
         var productUrls = new List<string>();
 
-        using var xmlStream = File.OpenRead("Data/ah product links.xml");
+        using var xmlStream = File.OpenRead("ah product links.xml");
         using var xmlReader = XmlReader.Create(xmlStream, new XmlReaderSettings
         {
             Async = true
@@ -44,7 +45,7 @@ public class ProductsFindToScrapeUseCase(FoodContext db, ILogger<ProductsFindToS
 
         var urlsNew = productUrls.Where(u => !urlsInDb.Contains(u)).ToList();
 
-        await db.ScrapeJobs.AddRangeAsync(urlsNew.Select(u => new Data.Types.ProductScrapeJob { Url = u }), Token);
+        await db.ScrapeJobs.AddRangeAsync(urlsNew.Select(u => new ProductScrapeJob { Url = u }), Token);
         await db.SaveChangesAsync(Token);
 
         logger.LogInformation("Found {ProductNewCount} new products to scrape", urlsNew.Count);

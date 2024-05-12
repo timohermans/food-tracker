@@ -1,11 +1,11 @@
 ﻿using Coravel.Invocable;
 using Coravel.Queuing.Interfaces;
+using Core.Data;
+using Core.Data.Types;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Playwright;
-using Web.Data;
-using Web.Data.Types;
 
-namespace Web.UseCases;
+namespace Scraper.UseCases;
 
 public class ProductScrapeUseCase(FoodContext db, ILogger<ProductScrapeUseCase> logger) : IInvocable, ICancellableTask
 {
