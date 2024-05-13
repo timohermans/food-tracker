@@ -10,7 +10,7 @@ trigger:
   paths:
    include:
      - Web/*
-     - azure-pipelines.yml
+     - azure-pipelines-web.yml
 
 pool:
   vmImage: 'windows-latest'
