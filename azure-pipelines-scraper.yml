@@ -24,20 +24,7 @@ variables:
   project: './Scraper/Scraper.csproj'
 
 steps:
-- task: DotNetCoreCLI@2
-  displayName: 'Restore'
-  inputs:
-    command: 'restore'
-    projects: '$(project)'
-    restoreArguments: '--locked-mode'
-    feedsToUse: 'select'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Build'
-  inputs:
-    command: 'build'
-    projects: '$(project)'
-    arguments: '-c $(buildConfiguration) --no-restore'
 
 - task: DotNetCoreCLI@2
   displayName: 'Publish'
@@ -45,7 +32,7 @@ steps:
     command: 'publish'
     publishWebProjects: false
     projects: '$(project)'
-    arguments: '-c $(buildConfiguration) --no-restore --no-build -o $(artifactPath)'
+    arguments: '-c $(buildConfiguration) -o $(artifactPath)'
     modifyOutputPath: false
 
 - publish: '$(artifactPath)'
