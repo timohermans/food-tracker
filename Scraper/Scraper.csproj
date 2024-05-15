@@ -7,6 +7,8 @@
     <UserSecretsId>dotnet-Scraper-cc2d3e2b-0a62-459a-88c2-561c948601dd</UserSecretsId>
     <OutputType>exe</OutputType>
     <PublishSingleFile Condition="'$(Configuration)' == 'Release'">true</PublishSingleFile>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
