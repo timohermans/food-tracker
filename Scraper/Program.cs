@@ -24,6 +24,11 @@ builder.Services.AddUseCases();
 
 builder.Services.AddDbContext<FoodContext>(
     opt => opt.UseSqlServer(config.GetConnectionString("Default")));
+
+builder.Services.AddWindowsService(options =>
+{
+    options.ServiceName = "App: FoodTracker";
+});
 builder.Services.AddScheduler();
 builder.Services.AddQueue();
 
@@ -40,8 +45,8 @@ scheduler.Schedule<ProductScrapeUseCase>()
 
 // if (env.IsDevelopment())
 // {
-    var queue = host.Services.GetRequiredService<IQueue>();
-    queue.QueueCancellableInvocable<ProductsFindToScrapeUseCase>();
+var queue = host.Services.GetRequiredService<IQueue>();
+queue.QueueCancellableInvocable<ProductsFindToScrapeUseCase>();
 // }
 
 host.Run();
