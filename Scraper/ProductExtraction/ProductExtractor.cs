@@ -1,8 +1,7 @@
 ﻿using AngleSharp;
-using Core.Data.Types;
-using Scraper.ProductExtration;
+using Scraper.ProductExtraction.PropertyExtractors;
 
-namespace Scraper.Services;
+namespace Scraper.ProductExtraction;
 
 public class ProductExtractor
 {
@@ -13,7 +12,8 @@ public class ProductExtractor
         _logger = logger;
     }
 
-    public async Task<ProductExtractionResult> ExtractAsync(string content)
+    public async Task<ProductExtractionResult> ExtractAsync(string content,
+        IEnumerable<IProductPropertyExtractor> propertyExtractors)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(content);
 
@@ -23,13 +23,16 @@ public class ProductExtractor
 
         var builder = new ProductBuilder();
 
-        var titleElement = document.QuerySelector("h1");
-        if (titleElement is null)
+        foreach (var extractor in propertyExtractors)
         {
-            _logger.LogError("No h1 element found. Something must be wrong with the content");
-            return new ProductFailResult();
+            var result = extractor.Extract(document, builder);
+            if (result == ExtractResult.Fail)
+            {
+                _logger.LogError("Failed to extract product information");
+                return new ProductFailResult("Product extraction failed, because of property extractor: " +
+                                             extractor.GetType().Name);
+            }
         }
-        builder.Title(titleElement.TextContent);
 
         return new ProductSuccess(builder.Build());
         // article#start-of-content > :first-child()
@@ -63,6 +66,5 @@ public class ProductExtractor
 
         // ProductInfo.Usage: .product-info-usage_root__y0B+w
         // ProductInfo.Storage: .product-info-storage_root__lL8pe
-
     }
 }

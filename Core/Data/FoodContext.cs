@@ -6,6 +6,7 @@ namespace Core.Data;
 public class FoodContext : DbContext
 {
     public DbSet<ProductScrapeJob> ScrapeJobs { get; set; }
+    public DbSet<Product> Products { get; set; }
 
     public FoodContext(DbContextOptions<FoodContext> options) : base(options)
     {
@@ -22,7 +23,7 @@ public class FoodContext : DbContext
         return base.SaveChanges();
     }
 
-    public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         BeforeSaveChanges();
         return await base.SaveChangesAsync(cancellationToken);
@@ -45,6 +46,5 @@ public class FoodContext : DbContext
                     entry.Entity.UpdatedAt = DateTime.Now;
                 }
             });
-
     }
 }

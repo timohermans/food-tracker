@@ -1,5 +1,6 @@
-﻿using Scraper.ProductExtration;
-using Scraper.Services;
+﻿using Scraper.ProductExtraction;
+using Scraper.ProductExtraction.PropertyExtractors;
+using Scraper.ProductExtraction.PropertyExtractors.Ah;
 
 namespace Tests.ScraperProject;
 
@@ -9,12 +10,18 @@ public class ProductExtractorTests
     public async Task Extracts_title()
     {
         var content = await File.ReadAllTextAsync("ScraperProject/Data/ah_franse_baguettes.html");
+
+        List<IProductPropertyExtractor> propertyExtractors =
+        [
+            new AhTitlePropertyExtractor(Helper.GetLogger<AhTitlePropertyExtractor>())
+        ];
+
         var extractor = new ProductExtractor(Helper.GetLogger<ProductExtractor>());
 
-        var result = await extractor.ExtractAsync(content);
+        var result = await extractor.ExtractAsync(content, propertyExtractors);
 
         result.Should().BeOfType<ProductSuccess>();
-        result.Result!.Title.Should().Be("AH Franse baguettes");
+        var succesResult = result as ProductSuccess;
+        succesResult!.Result.Title.Should().Be("AH Franse baguettes");
     }
-
 }

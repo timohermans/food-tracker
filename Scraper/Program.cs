@@ -20,6 +20,7 @@ builder.Services.AddSerilog((services, lc) =>
         .WriteTo.Console();
 });
 
+builder.Services.AddPropertyExtractors();
 builder.Services.AddUseCases();
 
 builder.Services.AddDbContext<FoodContext>(
