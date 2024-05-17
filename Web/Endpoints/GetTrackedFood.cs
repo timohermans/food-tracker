@@ -14,8 +14,8 @@ public class GetTrackedFood : IEndpoint
 
     }
 
-    public static async Task<IResult> Handle() {
-
-        return new RazorComponentResult<Tracker>();
+    public static Task<IResult> Handle()
+    {
+        return Task.FromResult<IResult>(new RazorComponentResult<Tracker>());
     }
 }

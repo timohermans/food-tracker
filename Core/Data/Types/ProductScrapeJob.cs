@@ -10,4 +10,13 @@ public class ProductScrapeJob : IAuditable
     public bool? HasNutritionInfo { get; set; } = null;
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+
+    public override string ToString()
+    {
+        if (Url.Contains('/')) {
+            return Url.Split('/', StringSplitOptions.RemoveEmptyEntries).Last();
+        }
+
+        return Url;
+    }
 }

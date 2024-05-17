@@ -47,6 +47,8 @@ scheduler.Schedule<ProductScrapeUseCase>()
 // {
 var queue = host.Services.GetRequiredService<IQueue>();
 queue.QueueCancellableInvocable<ProductsFindToScrapeUseCase>();
+
+queue.QueueCancellableInvocable<ParseHtmlContentToProductUseCase>();
 // }
 
 host.Run();

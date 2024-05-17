@@ -11,7 +11,7 @@ internal class ProductScraper(FoodContext db, ILogger<ProductScraper> logger) : 
 {
     public static readonly JobKey JobKey = new("AH_product_scrape");
 
-    public string Url { private get; set; }
+    public required string Url { private get; set; }
 
     public async Task Execute(IJobExecutionContext context)
     {
@@ -66,7 +66,7 @@ internal class ProductScraper(FoodContext db, ILogger<ProductScraper> logger) : 
         catch (Exception ex)
         {
             logger.LogError(ex, "Something went wrong with scraping AH");
-            throw ex;
+            throw;
         }
     }
 
