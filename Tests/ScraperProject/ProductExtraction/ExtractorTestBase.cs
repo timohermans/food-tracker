@@ -24,7 +24,10 @@ public class ExtractorTestBase
     protected ProductBuilder CreateMinimalValidProductBuilder()
     {
         var builder = new ProductBuilder();
-        builder.Title("Default title");
+        builder
+            .Title("Default title")
+            .Price("-1");
+        
         return builder;
     }
 }
