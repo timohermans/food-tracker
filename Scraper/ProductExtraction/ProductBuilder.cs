@@ -1,5 +1,5 @@
-﻿using System.Globalization;
-using Core.Data.Types;
+﻿using Core.Data.Types;
+using System.Globalization;
 
 namespace Scraper.ProductExtraction;
 
@@ -10,6 +10,7 @@ public class ProductBuilder
     private string? _unitSize;
     private Nutriscore _nutriscore;
     private string? _summary;
+    private List<Ingredient>? _ingredients;
 
     public ProductBuilder()
     {
@@ -33,25 +34,31 @@ public class ProductBuilder
         _price = price;
         return this;
     }
-    
+
     public ProductBuilder UnitSize(string unitSize)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(unitSize);
         _unitSize = Clean(unitSize);
         return this;
     }
-    
+
     public ProductBuilder Nutriscore(string nutriscoreStr)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(nutriscoreStr);
         _nutriscore = Enum.Parse<Nutriscore>(Clean(nutriscoreStr));
         return this;
     }
-    
+
     public ProductBuilder Summary(string summaryStr)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(summaryStr);
         _summary = Clean(summaryStr);
+        return this;
+    }
+
+    public ProductBuilder Ingredients(IEnumerable<string> ingredients)
+    {
+        _ingredients = ingredients.Select(i => new Ingredient { Name = i }).ToList();
         return this;
     }
 
@@ -63,14 +70,15 @@ public class ProductBuilder
             Price = _price ?? throw new ArgumentNullException(nameof(Price)),
             UnitSize = _unitSize,
             Nutriscore = _nutriscore,
-            Summary = _summary
+            Summary = _summary,
+            Ingredients = _ingredients
         };
     }
 
-    private string Clean(string content)
+    public static string Clean(string content)
     {
         return string.Join(" ", content
-            .Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+            .Split(["\n", "\r\n"], StringSplitOptions.RemoveEmptyEntries)
             .Select(x => x.Trim()));
     }
 }

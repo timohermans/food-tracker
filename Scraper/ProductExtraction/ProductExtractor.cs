@@ -34,6 +34,8 @@ public class ProductExtractor
             }
         }
 
+        // TODO: ProductPersister -> Denk aan ingredients die duplicate in DB gaan komen als ik niets doe! ofja komen, erroren :joy:
+
         return new ProductSuccess(builder.Build());
     }
 }

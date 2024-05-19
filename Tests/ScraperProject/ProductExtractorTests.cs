@@ -13,7 +13,8 @@ public class ProductExtractorTests
 
         List<IProductPropertyExtractor> propertyExtractors =
         [
-            new AhTitlePropertyExtractor(Helper.GetLogger<AhTitlePropertyExtractor>())
+            new AhTitlePropertyExtractor(Helper.GetLogger<AhTitlePropertyExtractor>()),
+            new AhPricePropertyExtractor(Helper.GetLogger<AhPricePropertyExtractor>())
         ];
 
         var extractor = new ProductExtractor(Helper.GetLogger<ProductExtractor>());
