@@ -14,6 +14,7 @@ public class AhTitlePropertyExtractor : IAhPropertyExtractor
     public ExtractResult Extract(IDocument document, ProductBuilder builder)
     {
         var titleElement = AhUtils.QueryHeroSection(document.Body)?.QuerySelector("h1");
+
         if (titleElement is null)
         {
             _logger.LogError("No h1 element found. Something must be wrong with the content");

@@ -44,6 +44,12 @@ public class AhPropertyExtractorTests : ExtractorTestBase
                                             i => i.Name == "zout",
                                             i => i.Name == "antioxidant (ascorbinezuur [E300])");
                     });
+                yield return new TestCaseData(
+                    new AhNutritionExtractor(Helper.GetLogger<AhNutritionExtractor>()),
+                    (Product p) =>
+                    {
+                        p.NutritionInfo.Should().NotBeNull();
+                    });
             }
         }
     }
