@@ -1,6 +1,8 @@
 using AngleSharp.Dom;
+using Scraper.UseCases.ProductScrape.ProductExtraction;
+using Scraper.UseCases.ProductScrape.ProductExtraction.PropertyExtractors;
 
-namespace Scraper.ProductExtraction.PropertyExtractors.Ah;
+namespace Scraper.UseCases.ProductScrape.ProductExtraction.PropertyExtractors.Ah;
 
 public class AhNutriscorePropertyExtractor : IAhPropertyExtractor
 {
@@ -19,14 +21,14 @@ public class AhNutriscorePropertyExtractor : IAhPropertyExtractor
 
         var title = nutriscoreElement?.TextContent;
 
-        if (string.IsNullOrWhiteSpace(title)) 
+        if (string.IsNullOrWhiteSpace(title))
         {
             _logger.LogError("No nutriscore element found.");
             return ExtractResult.NotFound;
         }
 
         var nutriscore = title.Split(' ').Last().ToUpper();
-        
+
         builder.Nutriscore(nutriscore);
         return ExtractResult.Success;
     }

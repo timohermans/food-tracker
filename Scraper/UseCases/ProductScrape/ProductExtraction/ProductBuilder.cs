@@ -1,7 +1,7 @@
 ﻿using Core.Data.Types;
 using System.Globalization;
 
-namespace Scraper.ProductExtraction;
+namespace Scraper.UseCases.ProductScrape.ProductExtraction;
 
 public class ProductBuilder
 {

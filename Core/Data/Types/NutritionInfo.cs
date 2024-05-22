@@ -14,6 +14,7 @@ public class NutritionInfo
     public Unit PerUnit { get; set; } // "grams"
     public double Calories { get; set; }
     public double? Carbs { get; set; }
+    public double? Sugars { get; set; }
     public double? Proteines { get; set; }
     public double? Fats { get; set; }
     public double? FatsSaturated { get; set; }

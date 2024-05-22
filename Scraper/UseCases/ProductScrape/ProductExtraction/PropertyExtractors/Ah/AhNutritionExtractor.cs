@@ -1,7 +1,9 @@
 ﻿using AngleSharp.Dom;
+using Scraper.UseCases.ProductScrape.ProductExtraction;
+using Scraper.UseCases.ProductScrape.ProductExtraction.PropertyExtractors;
 using System.Text.Json;
 
-namespace Scraper.ProductExtraction.PropertyExtractors.Ah;
+namespace Scraper.UseCases.ProductScrape.ProductExtraction.PropertyExtractors.Ah;
 
 public class AhNutritionExtractor : IAhPropertyExtractor
 {

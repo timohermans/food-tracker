@@ -1,6 +1,7 @@
 ﻿using AngleSharp.Dom;
+using Scraper.UseCases.ProductScrape.ProductExtraction;
 
-namespace Scraper.ProductExtraction.PropertyExtractors;
+namespace Scraper.UseCases.ProductScrape.ProductExtraction.PropertyExtractors;
 
 public interface IProductPropertyExtractor
 {

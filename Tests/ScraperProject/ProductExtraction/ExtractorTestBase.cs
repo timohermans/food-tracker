@@ -1,6 +1,6 @@
 using AngleSharp;
 using AngleSharp.Dom;
-using Scraper.ProductExtraction;
+using Scraper.UseCases.ProductScrape.ProductExtraction;
 
 namespace Tests.ScraperProject.ProductExtraction;
 

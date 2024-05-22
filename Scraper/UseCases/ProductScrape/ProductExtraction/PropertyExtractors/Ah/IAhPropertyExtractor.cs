@@ -1,4 +1,6 @@
-namespace Scraper.ProductExtraction.PropertyExtractors.Ah;
+using Scraper.UseCases.ProductScrape.ProductExtraction.PropertyExtractors;
+
+namespace Scraper.UseCases.ProductScrape.ProductExtraction.PropertyExtractors.Ah;
 
 public interface IAhPropertyExtractor : IProductPropertyExtractor
 {

@@ -1,6 +1,6 @@
-﻿using Scraper.ProductExtraction;
-using Scraper.ProductExtraction.PropertyExtractors;
-using Scraper.ProductExtraction.PropertyExtractors.Ah;
+﻿using Scraper.UseCases.ProductScrape.ProductExtraction;
+using Scraper.UseCases.ProductScrape.ProductExtraction.PropertyExtractors;
+using Scraper.UseCases.ProductScrape.ProductExtraction.PropertyExtractors.Ah;
 
 namespace Tests.ScraperProject;
 

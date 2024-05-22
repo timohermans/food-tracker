@@ -5,6 +5,7 @@ using Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Scraper;
 using Scraper.UseCases;
+using Scraper.UseCases.ProductScrape;
 using Serilog;
 
 var builder = Host.CreateApplicationBuilder(args);

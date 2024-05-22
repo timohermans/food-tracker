@@ -1,6 +1,8 @@
 using AngleSharp.Dom;
+using Scraper.UseCases.ProductScrape.ProductExtraction;
+using Scraper.UseCases.ProductScrape.ProductExtraction.PropertyExtractors;
 
-namespace Scraper.ProductExtraction.PropertyExtractors.Ah;
+namespace Scraper.UseCases.ProductScrape.ProductExtraction.PropertyExtractors.Ah;
 
 public class AhIngredientsPropertyExtractor : IAhPropertyExtractor
 {

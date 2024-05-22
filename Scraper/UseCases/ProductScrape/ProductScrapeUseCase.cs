@@ -5,7 +5,7 @@ using Core.Data.Types;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Playwright;
 
-namespace Scraper.UseCases;
+namespace Scraper.UseCases.ProductScrape;
 
 public class ProductScrapeUseCase(FoodContext db, ILogger<ProductScrapeUseCase> logger) : IInvocable, ICancellableTask
 {

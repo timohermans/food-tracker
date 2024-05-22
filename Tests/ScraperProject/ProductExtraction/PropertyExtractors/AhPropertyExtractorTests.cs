@@ -1,6 +1,6 @@
 using Core.Data.Types;
-using Scraper.ProductExtraction.PropertyExtractors;
-using Scraper.ProductExtraction.PropertyExtractors.Ah;
+using Scraper.UseCases.ProductScrape.ProductExtraction.PropertyExtractors;
+using Scraper.UseCases.ProductScrape.ProductExtraction.PropertyExtractors.Ah;
 using System.Collections;
 
 namespace Tests.ScraperProject.ProductExtraction.PropertyExtractors;
@@ -49,6 +49,18 @@ public class AhPropertyExtractorTests : ExtractorTestBase
                     (Product p) =>
                     {
                         p.NutritionInfo.Should().NotBeNull();
+                        p.NutritionInfo!.Per.Should().Be(100);
+                        p.NutritionInfo.PerUnit.Should().Be(Unit.Grams);
+                        p.NutritionInfo.PortionRecommended.Should().Be(10);
+                        p.NutritionInfo.Fats.Should().Be(1);
+                        p.NutritionInfo.FatsSaturated.Should().Be(0.2);
+                        p.NutritionInfo.FatsUnsaturated.Should().Be(0.4);
+                        p.NutritionInfo.Calories.Should().Be(241);
+                        p.NutritionInfo.Carbs.Should().Be(50);
+                        p.NutritionInfo.Sugars.Should().Be(3.3);
+                        p.NutritionInfo.Fibres.Should().Be(1.7);
+                        p.NutritionInfo.Proteines.Should().Be(7.2);
+                        p.NutritionInfo.Salts.Should().Be(0.9);
                     });
             }
         }
