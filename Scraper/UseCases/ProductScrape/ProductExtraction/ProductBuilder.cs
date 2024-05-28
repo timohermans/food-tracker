@@ -1,5 +1,6 @@
 ﻿using Core.Data.Types;
 using System.Globalization;
+using Scraper.UseCases.ProductScrape.ProductExtraction.PropertyExtractors.Ah;
 
 namespace Scraper.UseCases.ProductScrape.ProductExtraction;
 
@@ -11,6 +12,7 @@ public class ProductBuilder
     private Nutriscore _nutriscore;
     private string? _summary;
     private List<Ingredient>? _ingredients;
+    private NutritionInfo? _nutritionInfo;
 
     public ProductBuilder()
     {
@@ -62,6 +64,12 @@ public class ProductBuilder
         return this;
     }
 
+    public ProductBuilder AddNutritionInfo(NutritionInfo nutrition)
+    {
+        _nutritionInfo = nutrition;
+        return this;
+    }
+
     public Product Build()
     {
         return new Product
@@ -71,7 +79,8 @@ public class ProductBuilder
             UnitSize = _unitSize,
             Nutriscore = _nutriscore,
             Summary = _summary,
-            Ingredients = _ingredients
+            Ingredients = _ingredients,
+            NutritionInfo = _nutritionInfo
         };
     }
 
