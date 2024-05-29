@@ -4,11 +4,13 @@ using Scraper.UseCases.ProductScrape.ProductExtraction.PropertyExtractors;
 using System.Text.Json;
 using Core.Data.Types;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace Scraper.UseCases.ProductScrape.ProductExtraction.PropertyExtractors.Ah;
 
 public class AhNutritionExtractor : IAhPropertyExtractor
 {
+    private string? _productTitle = null;
     private readonly ILogger<AhNutritionExtractor> _logger;
 
     public AhNutritionExtractor(ILogger<AhNutritionExtractor> logger)
@@ -40,13 +42,17 @@ public class AhNutritionExtractor : IAhPropertyExtractor
             return ExtractResult.Fail;
         }
 
-        var ahNutrition = ahObject?.product?.card?.meta?.nutritions?.FirstOrDefault(n => n.servingSize!.Contains("100"));
+        _productTitle = ahObject.Title;
+
+        var ahNutrition = ahObject?.product?.card?.meta?.nutritions?.FirstOrDefault(n => n.servingSize?.Contains("100") ?? false);
 
         if (ahNutrition is null)
         {
-            _logger.LogInformation("This product has no nutrition info. Skipping");
+            _logger.LogInformation("Product {Title} has no nutrition info. Skipping", _productTitle);
             return ExtractResult.Success;
         }
+
+        _logger.LogInformation("Nutrition found on product {Title}", _productTitle);
 
         var servingSizeAndUnit = ExtractSizeAndUnitFrom(ahNutrition.servingSize);
         if (servingSizeAndUnit is null) return ExtractResult.Fail;
@@ -56,17 +62,11 @@ public class AhNutritionExtractor : IAhPropertyExtractor
         var ahNutrients = ahNutrition.nutrients ?? [];
 
         var caloriesNutrient = ahNutrients.FirstOrDefault(n => n.type == NutrientType.Calories)?.value ?? "";
-        var kcalRegex = new Regex("(?<kcal>\\d+) kcal");
+        var groupKey = "kcal";
+        var kcalRegex = new Regex($"(?<{groupKey}>\\d+) kcal");
         var kcalCapture = kcalRegex.Match(caloriesNutrient);
-        var kcalGroup = kcalCapture.Groups["kcall"];
+        var kcalGroup = kcalCapture.Groups[groupKey];
         var kcal = kcalGroup.Success ? double.Parse(kcalGroup.Value) : 0;
-
-        var fatsNutrient = ahNutrients.FirstOrDefault(n => n.type == NutrientType.Fats)?.value ?? "";
-        var fats = ExtractSizeAndUnitFrom(fatsNutrient);
-
-        // TODO: write the rest...
-        // var fatsNutrient = ahNutrients.FirstOrDefault(n => n.type == NutrientType.Fats)?.value ?? "";
-        // var fats = ExtractSizeAndUnitFrom(fatsNutrient);
 
         var nutrition = new NutritionInfo
         {
@@ -74,12 +74,19 @@ public class AhNutritionExtractor : IAhPropertyExtractor
             Per = Convert.ToInt32(servingSizeAndUnit.Value.Size),
             PortionRecommended = Convert.ToInt32(recommendedSize.GetValueOrDefault().Size),
             Calories = kcal,
-            Fats = fats?.Size
-
-
+            Fats = ExtractSizeOf(NutrientType.Fats, ahNutrients),
+            FatsUnsaturated = ExtractSizeOf(NutrientType.FatsUnsaturated, ahNutrients),
+            FatsSaturated = ExtractSizeOf(NutrientType.FatsSaturated, ahNutrients),
+            Carbs = ExtractSizeOf(NutrientType.Carbs, ahNutrients),
+            Sugars = ExtractSizeOf(NutrientType.Sugars, ahNutrients),
+            Proteines = ExtractSizeOf(NutrientType.Proteins, ahNutrients),
+            Fibres = ExtractSizeOf(NutrientType.Fibres, ahNutrients),
+            Salts = ExtractSizeOf(NutrientType.Salts, ahNutrients),
+            PreparationState = ExtractPreparationState(ahNutrition.preparationState)
         };
 
-        throw new NotImplementedException();
+        builder.AddNutritionInfo(nutrition);
+        return ExtractResult.Success;
     }
 
     private AhObject? DeserializeToAhObject(string script)
@@ -106,13 +113,19 @@ public class AhNutritionExtractor : IAhPropertyExtractor
         return ahObject;
     }
 
+    private double? ExtractSizeOf(string type, Nutrient[]? ahNutrients)
+    {
+        var nutrient = ahNutrients?.FirstOrDefault(n => n.type == type)?.value ?? "";
+        return ExtractSizeAndUnitFrom(nutrient)?.Size;
+    }
+
     private (double Size, Unit Unit)? ExtractSizeAndUnitFrom(string? text)
     {
         if (text is null) return null;
         var servingSizeAndUnit = text.Split(' ', StringSplitOptions.RemoveEmptyEntries) ?? [];
         if (servingSizeAndUnit.Length != 2)
         {
-            _logger.LogError("Unknown serving size. Contains more parts than unit and size: {Value}", text);
+            _logger.LogError("{Title}: Unknown serving size. Contains more parts than unit and size: {Value}", _productTitle, text);
             return null;
         }
 
@@ -125,28 +138,46 @@ public class AhNutritionExtractor : IAhPropertyExtractor
 
         if (!servingUnit.HasValue)
         {
-            _logger.LogError("Unknown serving unit. {Value}", text);
+            _logger.LogError("{Title}: Unknown serving unit. {Value}", _productTitle, text);
             return null;
         }
 
-        if (!double.TryParse(servingSizeAndUnit[0], out double servingSize))
+        if (!double.TryParse(servingSizeAndUnit[0], CultureInfo.InvariantCulture, out double servingSize))
         {
-            _logger.LogError("Serving size is not a number (first part): {Value}", text);
+            _logger.LogError("{Title}: Serving size is not a number (first part): {Value}", _productTitle, text);
             return null;
         }
 
         return (servingSize, servingUnit.Value);
     }
 
+    private PreparationState? ExtractPreparationState(string? preparationState)
+    {
+        PreparationState? state = preparationState?.ToLower() switch
+        {
+            "onbereide" => PreparationState.Unprepared,
+            "bereide" => PreparationState.Prepared,
+            "" => null,
+            _ => null
+        };
+
+        if (state is null)
+        {
+            _logger.LogInformation("{Title}: Product has no preparation state", _productTitle);
+        }
+
+        return state;
+    }
+
     private static class NutrientType
     {
         public const string Calories = "ENER-";
         public const string Fats = "FAT";
-        public const string FatsSaturated = "FATAS";
+        public const string FatsSaturated = "FASAT";
         public const string FatsUnsaturated = "X_FUNS";
         public const string Carbs = "CHOAVL";
         public const string Sugars = "SUGAR-";
-        public const string Fibers = "FIBTG";
+        public const string Fibres = "FIBTG";
         public const string Proteins = "PRO-";
         public const string Salts = "SALTEQ";
     }

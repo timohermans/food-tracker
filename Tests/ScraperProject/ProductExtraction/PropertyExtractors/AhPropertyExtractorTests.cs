@@ -54,7 +54,7 @@ public class AhPropertyExtractorTests : ExtractorTestBase
                         p.NutritionInfo.PortionRecommended.Should().Be(10);
                         p.NutritionInfo.Fats.Should().Be(1);
                         p.NutritionInfo.FatsSaturated.Should().Be(0.2);
-                        p.NutritionInfo.FatsUnsaturated.Should().Be(0.4);
+                        p.NutritionInfo.FatsUnsaturated.Should().Be(0.8);
                         p.NutritionInfo.Calories.Should().Be(241);
                         p.NutritionInfo.Carbs.Should().Be(50);
                         p.NutritionInfo.Sugars.Should().Be(3.3);

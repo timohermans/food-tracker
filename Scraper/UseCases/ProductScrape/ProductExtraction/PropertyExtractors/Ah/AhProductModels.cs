@@ -19,6 +19,8 @@ public class AhObject
     public Uistate? uiState { get; set; }
     public Router1? router { get; set; }
     public string? locale { get; set; }
+
+    public string? Title => product?.card?.products?.FirstOrDefault()?.title;
 }
 
 public class Common
