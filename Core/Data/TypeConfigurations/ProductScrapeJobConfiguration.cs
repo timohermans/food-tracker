@@ -11,6 +11,6 @@ internal class ProductScrapeJobConfiguration : IEntityTypeConfiguration<ProductS
         builder.Property(p => p.Url).IsRequired();
         builder.HasIndex(p => p.Url).IsUnique();
 
-        builder.Property(p => p.Content).HasColumnType("ntext");
+        builder.Property(p => p.Content).HasColumnType("nvarchar(max)");
     }
 }

@@ -7,6 +7,8 @@ public class FoodContext : DbContext
 {
     public DbSet<ProductScrapeJob> ScrapeJobs { get; set; }
     public DbSet<Product> Products { get; set; }
+    public DbSet<Ingredient> Ingredients { get; set; }
+    public DbSet<NutritionInfo> NutritionInfos { get; set; }
 
     public FoodContext(DbContextOptions<FoodContext> options) : base(options)
     {

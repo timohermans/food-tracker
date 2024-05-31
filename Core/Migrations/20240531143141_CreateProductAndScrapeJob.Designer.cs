@@ -4,6 +4,7 @@ using Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,13 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Core.Migrations
 {
     [DbContext(typeof(FoodContext))]
-    partial class FoodContextModelSnapshot : ModelSnapshot
+    [Migration("20240531143141_CreateProductAndScrapeJob")]
+    partial class CreateProductAndScrapeJob
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.6")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -39,7 +42,7 @@ namespace Core.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Ingredients");
+                    b.ToTable("Ingredient");
                 });
 
             modelBuilder.Entity("Core.Data.Types.NutritionInfo", b =>
@@ -91,7 +94,7 @@ namespace Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("NutritionInfos");
+                    b.ToTable("NutritionInfo");
                 });
 
             modelBuilder.Entity("Core.Data.Types.Product", b =>
@@ -129,9 +132,7 @@ namespace Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NutritionInfoId")
-                        .IsUnique()
-                        .HasFilter("[NutritionInfoId] IS NOT NULL");
+                    b.HasIndex("NutritionInfoId");
 
                     b.ToTable("Products");
                 });
@@ -191,8 +192,8 @@ namespace Core.Migrations
             modelBuilder.Entity("Core.Data.Types.Product", b =>
                 {
                     b.HasOne("Core.Data.Types.NutritionInfo", "NutritionInfo")
-                        .WithOne("Product")
-                        .HasForeignKey("Core.Data.Types.Product", "NutritionInfoId");
+                        .WithMany()
+                        .HasForeignKey("NutritionInfoId");
 
                     b.Navigation("NutritionInfo");
                 });
@@ -219,11 +220,6 @@ namespace Core.Migrations
                         .HasForeignKey("ProductsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Core.Data.Types.NutritionInfo", b =>
-                {
-                    b.Navigation("Product");
                 });
 #pragma warning restore 612, 618
         }

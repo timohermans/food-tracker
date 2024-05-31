@@ -1,7 +1,7 @@
+using Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Web;
-using Web.Data;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()

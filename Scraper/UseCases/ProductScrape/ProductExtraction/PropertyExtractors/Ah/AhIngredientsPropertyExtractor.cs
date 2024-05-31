@@ -15,7 +15,7 @@ public class AhIngredientsPropertyExtractor : IAhPropertyExtractor
 
     public ExtractResult Extract(IDocument element, ProductBuilder builder)
     {
-        var ingredientIdentifier = "Ingrediënten:";
+        var ingredientIdentifier = "IngrediÃ«nten:";
         var detailsSection = AhUtils.
             QueryDetailsSection(element.Body);
         var productInfoBlocks = detailsSection?
@@ -38,9 +38,12 @@ public class AhIngredientsPropertyExtractor : IAhPropertyExtractor
 
         var ingredientsText = ProductBuilder.Clean(ingredientsElement.TextContent);
         var endIndex = ingredientsText.IndexOf("."); // sometimes there are useless texts at the end, like "Waarvan toegevoegde suikers..."
-        ingredientsText = ingredientsText.Substring(ingredientIdentifier.Length + 1, endIndex - ingredientIdentifier.Length - 1);
+        if (endIndex > -1)
+        {
+            ingredientsText = ingredientsText.Substring(ingredientIdentifier.Length + 1, endIndex - ingredientIdentifier.Length - 1);
+        }
 
-        var ingredients = ingredientsText.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(i => i.Trim()).ToList();
+        var ingredients = ingredientsText.Split([",", ";"], StringSplitOptions.RemoveEmptyEntries).Select(i => i.Trim()).ToList();
 
         builder.Ingredients(ingredients);
 

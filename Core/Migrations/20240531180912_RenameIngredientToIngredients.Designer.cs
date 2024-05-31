@@ -4,6 +4,7 @@ using Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Core.Migrations
 {
     [DbContext(typeof(FoodContext))]
-    partial class FoodContextModelSnapshot : ModelSnapshot
+    [Migration("20240531180912_RenameIngredientToIngredients")]
+    partial class RenameIngredientToIngredients
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -91,7 +94,7 @@ namespace Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("NutritionInfos");
+                    b.ToTable("NutritionInfo");
                 });
 
             modelBuilder.Entity("Core.Data.Types.Product", b =>
@@ -108,7 +111,7 @@ namespace Core.Migrations
                     b.Property<string>("Nutriscore")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("NutritionInfoId")
+                    b.Property<int>("NutritionInfoId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Price")
@@ -129,9 +132,7 @@ namespace Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NutritionInfoId")
-                        .IsUnique()
-                        .HasFilter("[NutritionInfoId] IS NOT NULL");
+                    b.HasIndex("NutritionInfoId");
 
                     b.ToTable("Products");
                 });
@@ -191,8 +192,10 @@ namespace Core.Migrations
             modelBuilder.Entity("Core.Data.Types.Product", b =>
                 {
                     b.HasOne("Core.Data.Types.NutritionInfo", "NutritionInfo")
-                        .WithOne("Product")
-                        .HasForeignKey("Core.Data.Types.Product", "NutritionInfoId");
+                        .WithMany()
+                        .HasForeignKey("NutritionInfoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("NutritionInfo");
                 });
@@ -219,11 +222,6 @@ namespace Core.Migrations
                         .HasForeignKey("ProductsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Core.Data.Types.NutritionInfo", b =>
-                {
-                    b.Navigation("Product");
                 });
 #pragma warning restore 612, 618
         }

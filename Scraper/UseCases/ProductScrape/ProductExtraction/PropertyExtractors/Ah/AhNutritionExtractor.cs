@@ -20,19 +20,23 @@ public class AhNutritionExtractor : IAhPropertyExtractor
 
     public ExtractResult Extract(IDocument element, ProductBuilder builder)
     {
-        var scriptIdentifier = "window.__INITIAL_STATE__ =";
+        var scriptIdentifier = "window.__INITIAL_STATE__";
         var scriptElement = element.Scripts.FirstOrDefault(s => s.InnerHtml.Contains(scriptIdentifier));
         var script = scriptElement?.InnerHtml.Split(["\n", "\r\n"], StringSplitOptions.RemoveEmptyEntries)
-            .FirstOrDefault(l => l.Contains(scriptIdentifier))?
-            .Replace(scriptIdentifier, "")
-            .Replace("undefined", "null")
-            .Trim();
+            .FirstOrDefault(l => l.Contains(scriptIdentifier));
 
         if (script is null)
         {
             _logger.LogError("To my knowledge, all AH pages should have this json object");
             return ExtractResult.Fail;
         }
+
+        var objStart = script.IndexOf('{');
+        script = script.Substring(objStart, script.Length - objStart);
+        script = script.Replace(scriptIdentifier, "")
+        .Replace("undefined", "null")
+        .Trim();
+
 
         var ahObject = DeserializeToAhObject(script);
 
@@ -44,7 +48,7 @@ public class AhNutritionExtractor : IAhPropertyExtractor
 
         _productTitle = ahObject.Title;
 
-        var ahNutrition = ahObject?.product?.card?.meta?.nutritions?.FirstOrDefault(n => n.servingSize?.Contains("100") ?? false);
+        var ahNutrition = ahObject?.product?.card?.meta?.nutritions?.FirstOrDefault(n => n.basisQuantity?.Contains("100") ?? false);
 
         if (ahNutrition is null)
         {
@@ -54,7 +58,7 @@ public class AhNutritionExtractor : IAhPropertyExtractor
 
         _logger.LogInformation("Nutrition found on product {Title}", _productTitle);
 
-        var servingSizeAndUnit = ExtractSizeAndUnitFrom(ahNutrition.servingSize);
+        var servingSizeAndUnit = ExtractSizeAndUnitFrom(ahNutrition.basisQuantity);
         if (servingSizeAndUnit is null) return ExtractResult.Fail;
 
         var recommendedSize = ExtractSizeAndUnitFrom(ahNutrition.servingSizeDescription);
@@ -132,7 +136,7 @@ public class AhNutritionExtractor : IAhPropertyExtractor
         Unit? servingUnit = servingSizeAndUnit.Last().ToLower() switch
         {
             "gram" or "g" => Unit.Grams,
-            "milliliters" => Unit.Milliliters,
+            "milliliter" => Unit.Milliliters,
             _ => null
         };
 

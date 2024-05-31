@@ -27,4 +27,5 @@ public class NutritionInfo
     public double? FatsUnsaturated { get; set; }
     public double? Fibres { get; set; }
     public double? Salts { get; set; }
+    public Product? Product {get; set;}
 }

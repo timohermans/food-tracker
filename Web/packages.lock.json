@@ -4,37 +4,37 @@
     "net8.0": {
       "Microsoft.EntityFrameworkCore": {
         "type": "Direct",
-        "requested": "[8.0.4, )",
-        "resolved": "8.0.4",
-        "contentHash": "/kyu9pXuxQvhg8RO/oN5Q5Og7cDIVvZtrt1z48rX7Yido+zEGkUkp3/Bjd9u45N2uuPPF8mn2pKDlAewCvv3/Q==",
+        "requested": "[8.0.6, )",
+        "resolved": "8.0.6",
+        "contentHash": "Ms5e5QuBAjVIuQsGumeLvkgMiOpnj6wxPvwBIoe1NfTkseWK4NZYztnhgDlpkCPkrUmJEXLv69kl349Ours30Q==",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore.Abstractions": "8.0.4",
-          "Microsoft.EntityFrameworkCore.Analyzers": "8.0.4",
+          "Microsoft.EntityFrameworkCore.Abstractions": "8.0.6",
+          "Microsoft.EntityFrameworkCore.Analyzers": "8.0.6",
           "Microsoft.Extensions.Caching.Memory": "8.0.0",
           "Microsoft.Extensions.Logging": "8.0.0"
         }
       },
       "Microsoft.EntityFrameworkCore.Design": {
         "type": "Direct",
-        "requested": "[8.0.4, )",
-        "resolved": "8.0.4",
-        "contentHash": "QD5/h3+h4N7GlUaA4bzaYFW9CoeB7ne2KMiDIENIT0GPx+E6up/v9fDA36FAS3NIq9zeKUAQgN8aj6IwE7tMGw==",
+        "requested": "[8.0.6, )",
+        "resolved": "8.0.6",
+        "contentHash": "4OT+mH+8EB4Kfn1ENpDx2Ssx459j200gvdhDOKq5lkHmHzkRpmEDKS5GfqaLZvBLJKWu1FVGQ7Wnczcjb0hX4g==",
         "dependencies": {
           "Humanizer.Core": "2.14.1",
           "Microsoft.CodeAnalysis.CSharp.Workspaces": "4.5.0",
-          "Microsoft.EntityFrameworkCore.Relational": "8.0.4",
+          "Microsoft.EntityFrameworkCore.Relational": "8.0.6",
           "Microsoft.Extensions.DependencyModel": "8.0.0",
           "Mono.TextTemplating": "2.2.1"
         }
       },
       "Microsoft.EntityFrameworkCore.SqlServer": {
         "type": "Direct",
-        "requested": "[8.0.4, )",
-        "resolved": "8.0.4",
-        "contentHash": "/IlHNxzZGqiuVi+FPtjFZgAOfY989fTPtxw8zhmlFwv5M2WJzBSMlAP4jNVQX/k7/qu+y1YvddPxg4O5QdeRXw==",
+        "requested": "[8.0.6, )",
+        "resolved": "8.0.6",
+        "contentHash": "EUdsIcRew4vxE6pfi3aPUGvAGnfdCswPhWIU07SW5RymZldDCDo2dW/MyQw8nYDMQfsZYgE6+jyCg5VTV8lSMg==",
         "dependencies": {
           "Microsoft.Data.SqlClient": "5.1.5",
-          "Microsoft.EntityFrameworkCore.Relational": "8.0.4"
+          "Microsoft.EntityFrameworkCore.Relational": "8.0.6"
         }
       },
       "Serilog.AspNetCore": {
@@ -183,20 +183,20 @@
       },
       "Microsoft.EntityFrameworkCore.Abstractions": {
         "type": "Transitive",
-        "resolved": "8.0.4",
-        "contentHash": "S50pjtPNOvRktacaO6UAhvGCPMT56wxqEq8fQfcjaSUySPGba6mKWo6ackw6DdeAR1cA6U+U0uj27warA2KtJA=="
+        "resolved": "8.0.6",
+        "contentHash": "X7wSSBNFRuN8j8M9HDYG7rPpEeyhY+PdJZR9rftmgvsZH0eK5+bZ3b3As8iO4rLEpjsBzDnrgSIY6q2F3HQatw=="
       },
       "Microsoft.EntityFrameworkCore.Analyzers": {
         "type": "Transitive",
-        "resolved": "8.0.4",
-        "contentHash": "P8hfMZECdbgle4Us8HGRUKAjqVwgbtr5JqtCxqEoiVORrNQAmcpu3g1NKwTAoUsO9Z0QRgExtYoAmdggR/DkMQ=="
+        "resolved": "8.0.6",
+        "contentHash": "fDNtuQ4lAaPaCOlsrwUck/GvnF4QLeDpMmE1L5QtxZpMSmWfnL2/vk8sDL9OVTWcfprooI9V5MNpIx3/Tq5ehg=="
       },
       "Microsoft.EntityFrameworkCore.Relational": {
         "type": "Transitive",
-        "resolved": "8.0.4",
-        "contentHash": "aWLT6e9a8oMzXgF0YQpYYa3mDeU+yb2UQSQ+RrIgyGgSpzPfSKgpA7v2kOVDuZr2AQ6NNAlWPaBG7wZuKQI96w==",
+        "resolved": "8.0.6",
+        "contentHash": "chhfmLusCGLGvNYtvMji6KGQlduPDnJsStG/LjS8qJhFWJDDzTZpSr2LHowewcxMrMo/Axc6Jwe+WwSi/vlkTg==",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore": "8.0.4",
+          "Microsoft.EntityFrameworkCore": "8.0.6",
           "Microsoft.Extensions.Configuration.Abstractions": "8.0.0"
         }
       },
@@ -717,6 +717,14 @@
         "contentHash": "IXoJOXIqc39AIe+CIR7koBtRGMiCt/LPM3lI+PELtDIy9XdyeSrwXFdWV9dzJ2Awl0paLWUaknLxFQ5HpHZUog==",
         "dependencies": {
           "System.Drawing.Common": "6.0.0"
+        }
+      },
+      "core": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "[8.0.6, )",
+          "Microsoft.EntityFrameworkCore.Relational": "[8.0.6, )",
+          "Microsoft.EntityFrameworkCore.SqlServer": "[8.0.6, )"
         }
       }
     }

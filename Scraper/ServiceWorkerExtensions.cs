@@ -9,7 +9,7 @@ public static class ServiceWorkerExtensions
         typeof(ServiceWorkerExtensions)
             .Assembly
             .GetTypes()
-            .Where(t => t.IsAssignableTo(typeof(IProductPropertyExtractor)))
+            .Where(t => !t.IsInterface && t.IsAssignableTo(typeof(IProductPropertyExtractor)))
             .ToList()
             .ForEach(t => services.AddTransient(typeof(IProductPropertyExtractor), t));
     }

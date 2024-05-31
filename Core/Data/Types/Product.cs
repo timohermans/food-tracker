@@ -12,6 +12,7 @@ public class Product : IAuditable
     /// </summary>
     public string? Summary { get; set; }
     public ICollection<Ingredient>? Ingredients { get; set; }
+    public int? NutritionInfoId { get; set; }
     public NutritionInfo? NutritionInfo { get; set; }
 
     public DateTime CreatedAt { get; set; }

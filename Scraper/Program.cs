@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Scraper;
 using Scraper.UseCases;
 using Scraper.UseCases.ProductScrape;
+using Scraper.UseCases.ProductScrape.ProductExtraction;
 using Serilog;
 
 var builder = Host.CreateApplicationBuilder(args);
@@ -21,6 +22,7 @@ builder.Services.AddSerilog((services, lc) =>
         .WriteTo.Console();
 });
 
+builder.Services.AddTransient<ProductExtractor>();
 builder.Services.AddPropertyExtractors();
 builder.Services.AddUseCases();
 
@@ -39,18 +41,21 @@ var host = builder.Build();
 var scheduler = host.Services.GetRequiredService<IScheduler>();
 // scheduler.Schedule<ProductsFindToScrapeUseCase>()
 //     .DailyAt(0, 0)
-//     .PreventOverlhosting(nameof(ProductsFindToScrapeUseCase));
+//     .PreventOverlapping(nameof(ProductsFindToScrapeUseCase));
 
-scheduler.Schedule<ProductScrapeUseCase>()
-    .EveryMinute()
-    .PreventOverlapping(nameof(ProductScrapeUseCase));
+// scheduler.Schedule<ProductScrapeUseCase>()
+//     .EveryMinute()
+//     .PreventOverlapping(nameof(ProductScrapeUseCase));
+
+// scheduler.Schedule<ExtractProductFromHtmlUseCase>()
+//     .EveryMinute()
+//     .PreventOverlapping(nameof(ExtractProductFromHtmlUseCase));
 
 // if (env.IsDevelopment())
 // {
 var queue = host.Services.GetRequiredService<IQueue>();
-queue.QueueCancellableInvocable<ProductsFindToScrapeUseCase>();
-
-// queue.QueueCancellableInvocable<ExtractProductFromHtmlUseCase>();
+// queue.QueueCancellableInvocable<ProductsFindToScrapeUseCase>();
+queue.QueueCancellableInvocable<ExtractProductFromHtmlUseCase>();
 // }
 
 host.Run();
