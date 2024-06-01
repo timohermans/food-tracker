@@ -70,7 +70,11 @@ public class ExtractProductFromHtmlUseCase(
                                 .Include(p => p.Ingredients)
                                 .FirstOrDefault(p => p.Title == productNew.Title);
 
-                            if (productDb is not null)
+                            if (productDb is null)
+                            {
+                                productDb = productNew;
+                            }
+                            else
                             {
                                 productDb.Nutriscore = productNew.Nutriscore;
                                 productDb.Price = productNew.Price;
@@ -97,36 +101,36 @@ public class ExtractProductFromHtmlUseCase(
                                     productDb.NutritionInfo.PreparationState = productNew.NutritionInfo.PreparationState;
                                 }
                             }
-                            else
-                            {
-                                productDb = productNew;
-                            }
 
                             if (productDb.Ingredients?.Count > 0 && productNew.Ingredients?.Count > 0)
                             {
                                 var ingredientsRequired = productNew.Ingredients.Select(i => i.Name).Distinct().ToList();
-                                var ingredientsDb = await db.Ingredients.Where(i => ingredientsRequired.Contains(i.Name)).ToListAsync();
-                                var ingredientsDbNew = productDb.Ingredients.ExceptBy(ingredientsDb.Select(i => i.Name), i => i.Name).ToList();
-                                var completelyNew = productNew.Ingredients
-                                        .ExceptBy(ingredientsDb.Select(i => i.Name), i => i.Name)
-                                        .ExceptBy(ingredientsDbNew.Select(i => i.Name), i => i.Name)
-                                        .ToList();
-                                var ingredientsRemoved = productDb.Ingredients.ExceptBy(ingredientsRequired, i => i.Name)
+
+                                var ingredientsInDb = await db.Ingredients.Where(i => ingredientsRequired.Contains(i.Name)).ToListAsync();
+                                var ingredientsUnknown = productDb.Ingredients.ExceptBy(ingredientsInDb.Select(i => i.Name), i => i.Name).ToList();
+                                // var completelyNew = productNew.Ingredients
+                                //         .ExceptBy(ingredientsDb.Select(i => i.Name), i => i.Name)
+                                //         .ExceptBy(ingredientsDbNew.Select(i => i.Name), i => i.Name)
+                                //         .ToList();
+                                var ingredientsToRemove = productDb.Ingredients.ExceptBy(ingredientsRequired, i => i.Name)
                                     .ToList();
 
 
                                 // TODO: Hier gaat nog iets mis... Maar ik weet nog niet wat
                                 // Aardappelbollen is aan zet: er zitten ingredienten in DB die ik kan gebruiken
                                 // maar dat lijkt nog niet helemaal goed te gaan
+                                // het gaat dus mis zodra het product helemaal nieuw is... ... Alles in productdb.Ingredients is nog niet tracked
 
-                                if (completelyNew.Any())
+                                if (productDb.Id == default)
                                 {
-                                    await db.Ingredients.AddRangeAsync(completelyNew);
+                                    productDb.Ingredients.Clear();
+                                    ingredientsInDb.ForEach(productDb.Ingredients.Add);
+                                    ingredientsUnknown.ForEach(productDb.Ingredients.Add);
                                 }
 
-                                ingredientsDbNew.ForEach(productDb.Ingredients.Add);
-                                completelyNew.ForEach(productDb.Ingredients.Add);
-                                ingredientsRemoved.ForEach(i => productDb.Ingredients.Remove(i));
+                                // ingredientsDbNew.ForEach(productDb.Ingredients.Add);
+                                // completelyNew.ForEach(productDb.Ingredients.Add);
+                                ingredientsToRemove.ForEach(i => productDb.Ingredients.Remove(i));
                             }
 
                             if (productDb.Id == default)
