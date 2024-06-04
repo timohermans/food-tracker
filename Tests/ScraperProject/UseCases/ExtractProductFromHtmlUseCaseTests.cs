@@ -15,9 +15,10 @@ public class ExtractProductFromHtmlUseCaseTests : IntegrationTestBase
         {
             await preDb.ScrapeJobs.AddAsync(new ProductScrapeJob
             {
-                Url = "https://www.ah.nl/broodjes",
-                Content = await File.ReadAllTextAsync("../Data/ah_halfvolle_melk.html")
+                Url = "https://www.ah.nl/producten/product/wi107/ah-aardappelballetjes",
+                Content = await File.ReadAllTextAsync("ScraperProject/Data/ah_aardappelballetjes.html")
             });
+            await preDb.SaveChangesAsync();
         }
 
         await using (var db = GetDb())
@@ -39,11 +40,22 @@ public class ExtractProductFromHtmlUseCaseTests : IntegrationTestBase
 
         await using (var postDb = GetDb())
         {
-            var job = await postDb.ScrapeJobs.Include(sj => sj.Product).FirstOrDefaultAsync();
+            var job = await postDb.ScrapeJobs
+                        .Include(sj => sj.Product)
+                        .ThenInclude(p => p.Ingredients)
+                        .FirstOrDefaultAsync();
             job.Should().NotBeNull();
             job!.Product.Should().NotBeNull();
             var product = job!.Product!;
-            product.Title.Should().Be("AH Halfvolle melk");
+            product.Title.Should().Be("AH Aardappelballetjes");
+            product.Ingredients.Should().Satisfy(
+                i => i.Name == "88% aardappel",
+                i => i.Name == "6,4% aardappelvlok",
+                i => i.Name == "plantaardige olie (4,7% zonnebloem, raap)",
+                i => i.Name == "zout",
+                i => i.Name == "stabilisator (hydroxypropylmethylcellulose [E464])",
+                i => i.Name == "specerijenextract"
+            );
         }
     }
 }

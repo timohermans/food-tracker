@@ -15,7 +15,7 @@ public class IntegrationTestBase
     {
         // TODO: Verwisselen met mssql db, zodat alles werkt xD
         _options = new DbContextOptionsBuilder<FoodContext>()
-            .UseSqlite("Data Source=foodtracker.db")
+            .UseSqlServer("Server=localhost;User Id=sa;Password=P@ssw0rd;Initial Catalog=FoodTrackerTest;TrustServerCertificate=True")
             .Options;
 
         await using var db = GetDb();
@@ -28,7 +28,7 @@ public class IntegrationTestBase
         await using var db = GetDb();
 
         await db.Database.ExecuteSqlRawAsync("""
-            delete from Products;
+            delete from ScrapeJobs;
             delete from ProductIngredients;
             delete from Ingredients;
             delete from Products;

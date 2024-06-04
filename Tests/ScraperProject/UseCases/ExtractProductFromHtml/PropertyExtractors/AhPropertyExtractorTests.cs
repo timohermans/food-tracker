@@ -45,6 +45,22 @@ public class AhPropertyExtractorTests : ExtractorTestBase
                                             i => i.Name == "zout",
                                             i => i.Name == "antioxidant (ascorbinezuur [E300])");
                     });
+                    
+                yield return new TestCaseData("ScraperProject/Data/ah_aardappelballetjes.html", ExtractResult.Success,
+                    new AhIngredientsPropertyExtractor(Helper.GetLogger<AhIngredientsPropertyExtractor>()),
+                    (Product p) =>
+                    {
+                        p.Ingredients.Should()
+                                        .HaveCount(5)
+                                        .And
+                                        .Satisfy(
+                                            i => i.Name == "88% aardappel",
+                                            i => i.Name == "6,4% aardappelvlok",
+                                            i => i.Name == "plantaardige olie (4,7% zonnebloem, raap)",
+                                            i => i.Name == "zout",
+                                            i => i.Name == "stabilisator (hydroxypropylmethylcellulose [E464])",
+                                            i => i.Name == "specerijenextract");
+                    });
                 yield return new TestCaseData(htmlFrenchBaguette, ExtractResult.Success,
                     new AhNutritionExtractor(Helper.GetLogger<AhNutritionExtractor>()),
                     (Product p) =>

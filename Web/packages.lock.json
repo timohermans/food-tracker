@@ -39,9 +39,9 @@
       },
       "Roslynator.Analyzers": {
         "type": "Direct",
-        "requested": "[4.12.3, )",
-        "resolved": "4.12.3",
-        "contentHash": "6+O9GwAxOxJr1rZ4aaLiBiSH3pxDkJuXLE8qjo/JXLvGkZhKRLbAz30WA32RmJb5Nn1TmjZ2T3kWt3GJmEDj1w=="
+        "requested": "[4.12.4, )",
+        "resolved": "4.12.4",
+        "contentHash": "isl8hAh7yFNjyBEC4YlTSi+xGBblqBUC/2MCMmnBPwuXPewb7XYnMRzT3vXbP/gOGwT8hZUOy1g/aRH3lAF/NQ=="
       },
       "Serilog.AspNetCore": {
         "type": "Direct",
@@ -731,7 +731,7 @@
           "Microsoft.EntityFrameworkCore": "[8.0.6, )",
           "Microsoft.EntityFrameworkCore.Relational": "[8.0.6, )",
           "Microsoft.EntityFrameworkCore.SqlServer": "[8.0.6, )",
-          "Roslynator.Analyzers": "[4.12.3, )"
+          "Roslynator.Analyzers": "[4.12.4, )"
         }
       }
     }
