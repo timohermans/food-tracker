@@ -1,6 +1,6 @@
 ﻿using AngleSharp.Dom;
 
-namespace Scraper.UseCases.ProductScrape.ProductExtraction.PropertyExtractors.Ah;
+namespace Scraper.UseCases.ExtractProductFromHtml.PropertyExtractors.Ah;
 
 public static class AhUtils
 {

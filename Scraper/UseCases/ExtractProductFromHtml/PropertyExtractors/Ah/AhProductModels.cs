@@ -1,4 +1,4 @@
-﻿namespace Scraper.UseCases.ProductScrape.ProductExtraction.PropertyExtractors.Ah;
+﻿namespace Scraper.UseCases.ExtractProductFromHtml.PropertyExtractors.Ah;
 
 
 public class AhObject

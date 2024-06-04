@@ -1,8 +1,8 @@
 using AngleSharp;
 using AngleSharp.Dom;
-using Scraper.UseCases.ProductScrape.ProductExtraction;
+using Scraper.UseCases.ExtractProductFromHtml;
 
-namespace Tests.ScraperProject.ProductExtraction;
+namespace Tests.ScraperProject.ExtractProductFromHtml;
 
 public class ExtractorTestBase
 {

@@ -1,6 +1,6 @@
 using Core.Data.Types;
 
-namespace Scraper.UseCases.ProductScrape.ProductExtraction;
+namespace Scraper.UseCases.ExtractProductFromHtml;
 
 public abstract class ProductExtractionResult
 {

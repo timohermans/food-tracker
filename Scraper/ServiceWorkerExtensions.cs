@@ -1,4 +1,4 @@
-﻿using Scraper.UseCases.ProductScrape.ProductExtraction.PropertyExtractors;
+﻿using Scraper.UseCases.ExtractProductFromHtml.PropertyExtractors;
 
 namespace Scraper;
 

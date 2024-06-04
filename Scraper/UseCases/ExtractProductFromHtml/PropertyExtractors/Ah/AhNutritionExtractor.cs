@@ -1,12 +1,10 @@
 ﻿using AngleSharp.Dom;
-using Scraper.UseCases.ProductScrape.ProductExtraction;
-using Scraper.UseCases.ProductScrape.ProductExtraction.PropertyExtractors;
 using System.Text.Json;
 using Core.Data.Types;
 using System.Text.RegularExpressions;
 using System.Globalization;
 
-namespace Scraper.UseCases.ProductScrape.ProductExtraction.PropertyExtractors.Ah;
+namespace Scraper.UseCases.ExtractProductFromHtml.PropertyExtractors.Ah;
 
 public class AhNutritionExtractor : IAhPropertyExtractor
 {

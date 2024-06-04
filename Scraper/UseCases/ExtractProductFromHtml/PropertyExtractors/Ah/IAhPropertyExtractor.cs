@@ -1,6 +1,4 @@
-using Scraper.UseCases.ProductScrape.ProductExtraction.PropertyExtractors;
-
-namespace Scraper.UseCases.ProductScrape.ProductExtraction.PropertyExtractors.Ah;
+namespace Scraper.UseCases.ExtractProductFromHtml.PropertyExtractors.Ah;
 
 public interface IAhPropertyExtractor : IProductPropertyExtractor
 {

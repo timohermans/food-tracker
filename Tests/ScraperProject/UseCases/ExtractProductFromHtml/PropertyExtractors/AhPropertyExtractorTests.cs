@@ -1,9 +1,9 @@
 using Core.Data.Types;
-using Scraper.UseCases.ProductScrape.ProductExtraction.PropertyExtractors;
-using Scraper.UseCases.ProductScrape.ProductExtraction.PropertyExtractors.Ah;
+using Scraper.UseCases.ExtractProductFromHtml.PropertyExtractors;
+using Scraper.UseCases.ExtractProductFromHtml.PropertyExtractors.Ah;
 using System.Collections;
 
-namespace Tests.ScraperProject.ProductExtraction.PropertyExtractors;
+namespace Tests.ScraperProject.ExtractProductFromHtml.PropertyExtractors;
 
 public class AhPropertyExtractorTests : ExtractorTestBase
 {

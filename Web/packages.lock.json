@@ -37,6 +37,12 @@
           "Microsoft.EntityFrameworkCore.Relational": "8.0.6"
         }
       },
+      "Roslynator.Analyzers": {
+        "type": "Direct",
+        "requested": "[4.12.3, )",
+        "resolved": "4.12.3",
+        "contentHash": "6+O9GwAxOxJr1rZ4aaLiBiSH3pxDkJuXLE8qjo/JXLvGkZhKRLbAz30WA32RmJb5Nn1TmjZ2T3kWt3GJmEDj1w=="
+      },
       "Serilog.AspNetCore": {
         "type": "Direct",
         "requested": "[8.0.1, )",
@@ -724,7 +730,8 @@
         "dependencies": {
           "Microsoft.EntityFrameworkCore": "[8.0.6, )",
           "Microsoft.EntityFrameworkCore.Relational": "[8.0.6, )",
-          "Microsoft.EntityFrameworkCore.SqlServer": "[8.0.6, )"
+          "Microsoft.EntityFrameworkCore.SqlServer": "[8.0.6, )",
+          "Roslynator.Analyzers": "[4.12.3, )"
         }
       }
     }
