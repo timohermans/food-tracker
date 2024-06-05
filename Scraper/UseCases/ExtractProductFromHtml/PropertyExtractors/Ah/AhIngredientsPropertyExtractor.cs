@@ -46,11 +46,11 @@ public class AhIngredientsPropertyExtractor : IAhPropertyExtractor
         List<string> ingredients = [];
         StringBuilder ingredient = new();
         bool isInComponents = false;
+        char nonBreakingSpace = '\u00A0';
+        char[] firstIngredientSeparators = [',', ';', default];
+        char[] secondIngredientSeparators = [' ', nonBreakingSpace, '.', default];
         for (int i = 0; i <= ingredientsText.Length; i++)
         {
-            char[] firstIngredientSeparators = [',', ';', default];
-            char[] secondIngredientSeparators = [' ', '.', default];
-
             char ingrChar = ingredientsText.ElementAtOrDefault(i);
             char nextIngrChar = ingredientsText.ElementAtOrDefault(i + 1);
 

@@ -28,6 +28,7 @@ public class ExtractProductFromHtmlUseCaseTests : IntegrationTestBase
             List<IAhPropertyExtractor> propertyExtractors = [
                 new AhIngredientsPropertyExtractor(TestLogger.Create<AhIngredientsPropertyExtractor>()),
                 new AhNutriscorePropertyExtractor(TestLogger.Create<AhNutriscorePropertyExtractor>()),
+                new AhNutritionExtractor(TestLogger.Create<AhNutritionExtractor>()),
                 new AhPricePropertyExtractor(TestLogger.Create<AhPricePropertyExtractor>()),
                 new AhSummaryPropertyExtractor(TestLogger.Create<AhSummaryPropertyExtractor>()),
                 new AhTitlePropertyExtractor(TestLogger.Create<AhTitlePropertyExtractor>()),

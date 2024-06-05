@@ -18,7 +18,7 @@ public class AhNutritionExtractor : IAhPropertyExtractor
 
     public ExtractResult Extract(IDocument element, ProductBuilder builder)
     {
-        var scriptIdentifier = "window.__INITIAL_STATE__";
+        const string scriptIdentifier = "window.__INITIAL_STATE__";
         var scriptElement = element.Scripts.FirstOrDefault(s => s.InnerHtml.Contains(scriptIdentifier));
         var script = scriptElement?.InnerHtml.Split(["\n", "\r\n"], StringSplitOptions.RemoveEmptyEntries)
             .FirstOrDefault(l => l.Contains(scriptIdentifier));
