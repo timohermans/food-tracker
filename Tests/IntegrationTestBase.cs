@@ -13,7 +13,6 @@ public class IntegrationTestBase
     [OneTimeSetUp]
     public async Task BeforeAllAsync()
     {
-        // TODO: Verwisselen met mssql db, zodat alles werkt xD
         _options = new DbContextOptionsBuilder<FoodContext>()
             .UseSqlServer("Server=localhost;User Id=sa;Password=P@ssw0rd;Initial Catalog=FoodTrackerTest;TrustServerCertificate=True")
             .Options;

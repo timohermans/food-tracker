@@ -1,11 +1,11 @@
 using Coravel;
-using Coravel.Queuing.Interfaces;
 using Coravel.Scheduling.Schedule.Interfaces;
 using Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Scraper;
 using Scraper.UseCases;
 using Scraper.UseCases.ExtractProductFromHtml;
+using Scraper.UseCases.ProductScrape;
 using Serilog;
 
 var builder = Host.CreateApplicationBuilder(args);
@@ -38,23 +38,24 @@ builder.Services.AddQueue();
 var host = builder.Build();
 
 var scheduler = host.Services.GetRequiredService<IScheduler>();
-// scheduler.Schedule<ProductsFindToScrapeUseCase>()
-//     .DailyAt(0, 0)
-//     .PreventOverlapping(nameof(ProductsFindToScrapeUseCase));
 
-// scheduler.Schedule<WebsiteScrapeUseCase>()
-//     .EveryMinute()
-//     .PreventOverlapping(nameof(WebsiteScrapeUseCase));
+var findJob = scheduler.Schedule<ProductsFindToScrapeUseCase>()
+    .DailyAt(0, 0)
+    .PreventOverlapping(nameof(ProductsFindToScrapeUseCase));
 
-// scheduler.Schedule<ExtractProductFromHtmlUseCase>()
-//     .EveryMinute()
-//     .PreventOverlapping(nameof(ExtractProductFromHtmlUseCase));
+var websiteScrapeJob = scheduler.Schedule<WebsiteScrapeUseCase>()
+    .EveryMinute()
+    .PreventOverlapping(nameof(WebsiteScrapeUseCase));
 
-// if (env.IsDevelopment())
-// {
-var queue = host.Services.GetRequiredService<IQueue>();
-// queue.QueueCancellableInvocable<ProductsFindToScrapeUseCase>();
-queue.QueueCancellableInvocable<ExtractProductFromHtmlUseCase>();
-// }
+var extractJob = scheduler.Schedule<ExtractProductFromHtmlUseCase>()
+    .EveryMinute()
+    .PreventOverlapping(nameof(ExtractProductFromHtmlUseCase));
+
+if (env.IsDevelopment())
+{
+    findJob.RunOnceAtStart();
+    websiteScrapeJob.RunOnceAtStart();
+    extractJob.RunOnceAtStart();
+}
 
 host.Run();
