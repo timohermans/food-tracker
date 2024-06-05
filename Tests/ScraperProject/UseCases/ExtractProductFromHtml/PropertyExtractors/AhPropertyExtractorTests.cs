@@ -123,6 +123,8 @@ public class AhPropertyExtractorTests : ExtractorTestBase
                         p.NutritionInfo.Salts.Should().Be(0.13);
                         p.NutritionInfo.PreparationState.Should().Be(PreparationState.Unprepared);
                     });
+
+                // TODO: Test product without ingredients
             }
         }
     }
