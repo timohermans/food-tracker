@@ -52,7 +52,7 @@ public class ProductPersister(FoodContext db)
             var ingredientsRequired = productNew.Ingredients.Select(i => i.Name).Distinct().ToList();
 
             var ingredientsInDb = await _db.Ingredients.Where(i => ingredientsRequired.Contains(i.Name)).ToListAsync();
-            var ingredientsUnknown = productNew.Ingredients.ExceptBy(ingredientsInDb.Select(i => i.Name), i => i.Name).ToList();
+            var ingredientsUnknown = productNew.Ingredients.ExceptBy(ingredientsInDb.Select(i => i.Name.ToLower()), i => i.Name.ToLower()).ToList();
 
             productDb.Ingredients.Clear();
             ingredientsInDb.ForEach(productDb.Ingredients.Add);

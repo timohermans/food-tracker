@@ -45,7 +45,7 @@ public class AhPropertyExtractorTests : ExtractorTestBase
                                             i => i.Name == "zout",
                                             i => i.Name == "antioxidant (ascorbinezuur [E300])");
                     });
-                    
+
                 yield return new TestCaseData("ScraperProject/Data/ah_aardappelballetjes.html", ExtractResult.Success,
                     new AhIngredientsPropertyExtractor(Helper.GetLogger<AhIngredientsPropertyExtractor>()),
                     (Product p) =>
@@ -124,7 +124,25 @@ public class AhPropertyExtractorTests : ExtractorTestBase
                         p.NutritionInfo.PreparationState.Should().Be(PreparationState.Unprepared);
                     });
 
-                // TODO: Test product without ingredients
+                yield return new TestCaseData("ScraperProject/Data/ah_schrijfblok_a4.html", ExtractResult.NotFound,
+                    new AhIngredientsPropertyExtractor(Helper.GetLogger<AhIngredientsPropertyExtractor>()),
+                    (Product p) =>
+                    {
+                        p.Ingredients.Should().BeNull();
+                    });
+
+                yield return new TestCaseData("ScraperProject/Data/ah_halfvolle_yoghurt_vanille.html", ExtractResult.Success,
+                    new AhIngredientsPropertyExtractor(Helper.GetLogger<AhIngredientsPropertyExtractor>()),
+                    (Product p) =>
+                    {
+                        p.Ingredients.Should().Satisfy(
+                            i => i.Name == "suiker",
+                            i => i.Name == "halfvolle YOGHURT",
+                            i => i.Name == "gemodificeerd maïszetmeel",
+                            i => i.Name == "aroma",
+                            i => i.Name == "kleurstoffen: curcumine en annato"
+                        );
+                    });
             }
         }
     }

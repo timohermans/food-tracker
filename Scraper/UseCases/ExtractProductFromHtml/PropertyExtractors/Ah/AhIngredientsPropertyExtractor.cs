@@ -24,12 +24,6 @@ public class AhIngredientsPropertyExtractor : IAhPropertyExtractor
             .FirstOrDefault(p => p.TextContent.Contains(ingredientIdentifier))?
             .QuerySelector("p");
 
-        if (ingredientsElement is null && !(detailsSection?.TextContent.Contains("kcal") ?? false))
-        {
-            _logger.LogError("No ingredients found while there is a kcal found in text. Parsing must be broken!");
-            return ExtractResult.Fail;
-        }
-
         if (ingredientsElement is null)
         {
             _logger.LogWarning("No ingredients found");
@@ -37,10 +31,11 @@ public class AhIngredientsPropertyExtractor : IAhPropertyExtractor
         }
 
         var ingredientsText = ProductBuilder.Clean(ingredientsElement.TextContent);
+        ingredientsText = ingredientsText.Replace(ingredientIdentifier, "").Trim();
         var endIndex = ingredientsText.IndexOf("."); // sometimes there are useless texts at the end, like "Waarvan toegevoegde suikers..."
         if (endIndex > -1)
         {
-            ingredientsText = ingredientsText.Substring(ingredientIdentifier.Length + 1, endIndex - ingredientIdentifier.Length - 1);
+            ingredientsText = ingredientsText.Substring(0, endIndex);
         }
 
         List<string> ingredients = [];
@@ -68,7 +63,7 @@ public class AhIngredientsPropertyExtractor : IAhPropertyExtractor
                 secondIngredientSeparators.Contains(nextIngrChar) &&
                 firstIngredientSeparators.Contains(ingrChar))
             {
-                ingredients.Add(ingredient.ToString());
+                ingredients.Add(ingredient.ToString().RemoveSpecialCharacters());
                 ingredient = new StringBuilder();
                 i++;
             }
