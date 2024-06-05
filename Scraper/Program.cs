@@ -42,9 +42,9 @@ var scheduler = host.Services.GetRequiredService<IScheduler>();
 //     .DailyAt(0, 0)
 //     .PreventOverlapping(nameof(ProductsFindToScrapeUseCase));
 
-// scheduler.Schedule<ProductScrapeUseCase>()
+// scheduler.Schedule<WebsiteScrapeUseCase>()
 //     .EveryMinute()
-//     .PreventOverlapping(nameof(ProductScrapeUseCase));
+//     .PreventOverlapping(nameof(WebsiteScrapeUseCase));
 
 // scheduler.Schedule<ExtractProductFromHtmlUseCase>()
 //     .EveryMinute()

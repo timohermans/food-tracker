@@ -7,7 +7,7 @@ using Microsoft.Playwright;
 
 namespace Scraper.UseCases.ProductScrape;
 
-public class ProductScrapeUseCase(FoodContext db, ILogger<ProductScrapeUseCase> logger) : IInvocable, ICancellableTask
+public class WebsiteScrapeUseCase(FoodContext db, ILogger<WebsiteScrapeUseCase> logger) : IInvocable, ICancellableTask
 {
     public CancellationToken Token { get; set; }
 
