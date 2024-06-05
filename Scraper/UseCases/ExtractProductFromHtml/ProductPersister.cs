@@ -52,30 +52,11 @@ public class ProductPersister(FoodContext db)
             var ingredientsRequired = productNew.Ingredients.Select(i => i.Name).Distinct().ToList();
 
             var ingredientsInDb = await _db.Ingredients.Where(i => ingredientsRequired.Contains(i.Name)).ToListAsync();
-            var ingredientsUnknown = productDb.Ingredients.ExceptBy(ingredientsInDb.Select(i => i.Name), i => i.Name).ToList();
-            // var completelyNew = productNew.Ingredients
-            //         .ExceptBy(ingredientsDb.Select(i => i.Name), i => i.Name)
-            //         .ExceptBy(ingredientsDbNew.Select(i => i.Name), i => i.Name)
-            //         .ToList();
-            var ingredientsToRemove = productDb.Ingredients.ExceptBy(ingredientsRequired, i => i.Name)
-                .ToList();
+            var ingredientsUnknown = productNew.Ingredients.ExceptBy(ingredientsInDb.Select(i => i.Name), i => i.Name).ToList();
 
-
-            // TODO: Hier gaat nog iets mis... Maar ik weet nog niet wat
-            // Aardappelbollen is aan zet: er zitten ingredienten in DB die ik kan gebruiken
-            // maar dat lijkt nog niet helemaal goed te gaan
-            // het gaat dus mis zodra het product helemaal nieuw is... ... Alles in productdb.Ingredients is nog niet tracked
-
-            if (productDb.Id == default)
-            {
-                productDb.Ingredients.Clear();
-                ingredientsInDb.ForEach(productDb.Ingredients.Add);
-                ingredientsUnknown.ForEach(productDb.Ingredients.Add);
-            }
-
-            // ingredientsDbNew.ForEach(productDb.Ingredients.Add);
-            // completelyNew.ForEach(productDb.Ingredients.Add);
-            ingredientsToRemove.ForEach(i => productDb.Ingredients.Remove(i));
+            productDb.Ingredients.Clear();
+            ingredientsInDb.ForEach(productDb.Ingredients.Add);
+            ingredientsUnknown.ForEach(productDb.Ingredients.Add);
         }
 
         if (productDb.Id == default)
