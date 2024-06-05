@@ -43,6 +43,8 @@ public class ExtractProductFromHtmlUseCaseTests : IntegrationTestBase
             var job = await postDb.ScrapeJobs
                         .Include(sj => sj.Product)
                         .ThenInclude(p => p.Ingredients)
+                        .Include(sj => sj.Product)
+                        .ThenInclude(p => p.NutritionInfo)
                         .FirstOrDefaultAsync();
             job.Should().NotBeNull();
             job!.Product.Should().NotBeNull();
@@ -56,6 +58,19 @@ public class ExtractProductFromHtmlUseCaseTests : IntegrationTestBase
                 i => i.Name == "stabilisator (hydroxypropylmethylcellulose [E464])",
                 i => i.Name == "specerijenextract"
             );
+            product.Nutriscore.Should().Be(Nutriscore.C);
+            product.NutritionInfo.Should().NotBeNull();
+            product.NutritionInfo!.Per.Should().Be(100);
+            product.NutritionInfo.PerUnit.Should().Be(Unit.Grams);
+            product.NutritionInfo.Calories.Should().Be(137);
+            product.NutritionInfo.Fats.Should().Be(4.4);
+            product.NutritionInfo.FatsSaturated.Should().Be(0.5);
+            product.NutritionInfo.FatsUnsaturated.Should().Be(3.9);
+            product.NutritionInfo.Carbs.Should().Be(21);
+            product.NutritionInfo.Sugars.Should().Be(0.7);
+            product.NutritionInfo.Fibres.Should().Be(2.2);
+            product.NutritionInfo.Proteines.Should().Be(2.2);
+            product.NutritionInfo.Salts.Should().Be(0.7);
         }
     }
 }

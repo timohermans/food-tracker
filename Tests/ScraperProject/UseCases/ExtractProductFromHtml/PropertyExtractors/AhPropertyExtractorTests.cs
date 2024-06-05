@@ -51,7 +51,7 @@ public class AhPropertyExtractorTests : ExtractorTestBase
                     (Product p) =>
                     {
                         p.Ingredients.Should()
-                                        .HaveCount(5)
+                                        .HaveCount(6)
                                         .And
                                         .Satisfy(
                                             i => i.Name == "88% aardappel",

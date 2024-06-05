@@ -1,4 +1,6 @@
+using System.Text;
 using AngleSharp.Dom;
+using Core.Data.Types;
 
 namespace Scraper.UseCases.ExtractProductFromHtml.PropertyExtractors.Ah;
 
@@ -41,7 +43,41 @@ public class AhIngredientsPropertyExtractor : IAhPropertyExtractor
             ingredientsText = ingredientsText.Substring(ingredientIdentifier.Length + 1, endIndex - ingredientIdentifier.Length - 1);
         }
 
-        var ingredients = ingredientsText.Split([",", ";"], StringSplitOptions.RemoveEmptyEntries).Select(i => i.Trim()).ToList();
+        List<string> ingredients = [];
+        StringBuilder ingredient = new();
+        bool isInComponents = false;
+        for (int i = 0; i <= ingredientsText.Length; i++)
+        {
+            char[] firstIngredientSeparators = [',', ';', default];
+            char[] secondIngredientSeparators = [' ', '.', default];
+
+            char ingrChar = ingredientsText.ElementAtOrDefault(i);
+            char nextIngrChar = ingredientsText.ElementAtOrDefault(i + 1);
+
+            if (ingrChar == '(')
+            {
+                isInComponents = true;
+            }
+
+            if (ingrChar == ')')
+            {
+                isInComponents = false;
+            }
+
+            if (!isInComponents &&
+                secondIngredientSeparators.Contains(nextIngrChar) &&
+                firstIngredientSeparators.Contains(ingrChar))
+            {
+                ingredients.Add(ingredient.ToString());
+                ingredient = new StringBuilder();
+                i++;
+            }
+            else
+            {
+                ingredient.Append(ingrChar);
+            }
+
+        }
 
         builder.Ingredients(ingredients);
 
