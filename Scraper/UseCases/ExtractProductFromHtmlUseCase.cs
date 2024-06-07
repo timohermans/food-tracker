@@ -33,53 +33,65 @@ public class ExtractProductFromHtmlUseCase(
             {
                 // trade-off here: to prevent fetching ALL html contents (big memory) at once, only fetch IDs first and query in a loop
                 var job = await db.ScrapeJobs.FindAsync(jobId);
-                ArgumentNullException.ThrowIfNull(job);
 
-                if (Token.IsCancellationRequested)
+                if (job is null) continue;
+                try
                 {
-                    logger.LogInformation("Job {Id}: aborted due to cancellation", job.Id);
-                    return;
-                }
+                    ArgumentNullException.ThrowIfNull(job);
 
-                List<IProductPropertyExtractor> propertyExtractorsToUse = [];
-
-                if (job.Url.Contains("ah.nl", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    propertyExtractorsToUse = propertyExtractors
-                        .Where(p => p is IAhPropertyExtractor)
-                        .ToList();
-                }
-
-
-                if (propertyExtractorsToUse.Count == 0)
-                {
-                    logger.LogError("No extractors available for Job {JobId}", job.Id);
-                    job.ErrorMessage = "Unable to determine property extractors for this job";
-                }
-                else
-                {
-                    logger.LogInformation("Job {Id}: Extracting product..", job.Id);
-                    var result = await extractor.ExtractAsync(job.Content!, propertyExtractorsToUse);
-
-                    switch (result)
+                    if (Token.IsCancellationRequested)
                     {
-                        case ProductSuccess productResult:
-                            var persister = new ProductPersister(db);
-                            job.Product = await persister.Persist(productResult.Result);
-                            break;
+                        logger.LogInformation("Job {Id}: aborted due to cancellation", job.Id);
+                        return;
+                    }
 
-                        case ProductFailResult failResult:
-                            job.ErrorMessage = failResult.ErrorMessage;
-                            logger.LogWarning("Job {Id}: Job failed with extractor error", job.Id);
-                            break;
+                    List<IProductPropertyExtractor> propertyExtractorsToUse = [];
 
-                        default:
-                            throw new NotImplementedException("unknown result: " + result.GetType().Name);
+                    if (job.Url.Contains("ah.nl", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        propertyExtractorsToUse = propertyExtractors
+                            .Where(p => p is IAhPropertyExtractor)
+                            .ToList();
+                    }
+
+
+                    if (propertyExtractorsToUse.Count == 0)
+                    {
+                        logger.LogError("No extractors available for Job {JobId}", job.Id);
+                        job.ErrorMessage = "Unable to determine property extractors for this job";
+                    }
+                    else
+                    {
+                        logger.LogInformation("Job {Id}: Extracting product..", job.Id);
+                        var result = await extractor.ExtractAsync(job.Content!, propertyExtractorsToUse);
+
+                        switch (result)
+                        {
+                            case ProductSuccess productResult:
+                                var persister = new ProductPersister(db);
+                                job.Product = await persister.Persist(productResult.Result);
+                                break;
+
+                            case ProductFailResult failResult:
+                                job.ErrorMessage = failResult.ErrorMessage;
+                                logger.LogWarning("Job {Id}: Job failed with extractor error", job.Id);
+                                break;
+
+                            default:
+                                throw new NotImplementedException("unknown result: " + result.GetType().Name);
+                        }
                     }
                 }
-
-                await db.SaveChangesAsync();
-                logger.LogInformation("Job {Id}: Done", job.Id);
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "Job {Url}: Failed somewhere", job.Url);
+                    job.ErrorMessage = ex.Message;
+                }
+                finally
+                {
+                    await db.SaveChangesAsync();
+                    logger.LogInformation("Job {Id}: Done", job.Id);
+                }
             }
         }
         catch (Exception ex)

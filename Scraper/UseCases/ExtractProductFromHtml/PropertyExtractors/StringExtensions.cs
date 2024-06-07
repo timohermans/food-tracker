@@ -6,7 +6,7 @@ public static class StringExtensions
 {
     public static string RemoveSpecialCharacters(this string value)
     {
-        char[] otherSpecials = [',', '%', ' ', '[', ']', '(', ')', '-', '\''];
+        char[] otherSpecials = [',', '%', ' ', '[', ']', '(', ')', '-', '\'', ':', ';'];
         StringBuilder sb = new StringBuilder();
         foreach (char c in value)
         {
