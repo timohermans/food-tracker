@@ -81,15 +81,24 @@ public class ExtractProductFromHtmlUseCase(
                                 throw new NotImplementedException("unknown result: " + result.GetType().Name);
                         }
                     }
+                    await db.SaveChangesAsync();
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(ex, "Job {Url}: Failed somewhere", job.Url);
-                    job.ErrorMessage = ex.Message;
+                    var jobForEx = await db.ScrapeJobs.FindAsync(job.Id);
+                    if (jobForEx is not null)
+                    {
+                        jobForEx.ErrorMessage = ex.Message;
+                        await db.SaveChangesAsync();
+                        logger.LogError(ex, "Job {Url}: Failed somewhere", jobForEx.Url);
+                    }
+                    else
+                    {
+                        logger.LogError(ex, "Job {Id}: Somehow job cannot be found anymore in the DB", job.Id);
+                    }
                 }
                 finally
                 {
-                    await db.SaveChangesAsync();
                     logger.LogInformation("Job {Id}: Done", job.Id);
                 }
             }
