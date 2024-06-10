@@ -85,6 +85,7 @@ public class ExtractProductFromHtmlUseCase(
                 }
                 catch (Exception ex)
                 {
+                    db.ChangeTracker.Clear();
                     var jobForEx = await db.ScrapeJobs.FindAsync(job.Id);
                     if (jobForEx is not null)
                     {
