@@ -1,10 +1,9 @@
 ﻿
 using Microsoft.AspNetCore.Http.HttpResults;
-using Web.Views;
 
-namespace Web.Endpoints;
+namespace Web.Features.GetTrackedFood;
 
-public class GetTrackedFood : IEndpoint
+public class GetTrackedFoodEndpoint : IEndpoint
 {
     public static readonly string RouteName = "tracker";
     public void Configure(IEndpointRouteBuilder builder)
@@ -16,6 +15,6 @@ public class GetTrackedFood : IEndpoint
 
     public static Task<IResult> Handle()
     {
-        return Task.FromResult<IResult>(new RazorComponentResult<Tracker>());
+        return Task.FromResult<IResult>(new RazorComponentResult<GetTrackedFoodView>());
     }
 }

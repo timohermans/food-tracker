@@ -20,11 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Endpoints\" />
-    <Folder Include="Views\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
 

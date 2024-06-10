@@ -7,11 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App", "App\App.csproj", "{8
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{68CB1F94-D5F6-41A9-A03D-F2F8484BC604}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{7E54A612-B924-467A-A400-5A6E12428790}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "Web\Web.csproj", "{7E54A612-B924-467A-A400-5A6E12428790}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scraper", "Scraper\Scraper.csproj", "{A8623073-8303-4CAF-92E3-C1DDFA6CCC9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scraper", "Scraper\Scraper.csproj", "{A8623073-8303-4CAF-92E3-C1DDFA6CCC9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{C5D3F5A6-654D-4524-82C9-CFF6ECC11A0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{C5D3F5A6-654D-4524-82C9-CFF6ECC11A0A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
