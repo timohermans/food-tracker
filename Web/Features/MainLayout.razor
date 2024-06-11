@@ -1,12 +1,41 @@
 ﻿@namespace Web.Features
 @inherits LayoutComponentBase
+@inject AntiforgeryStateProvider Antiforgery
 
-<h3>MainLayout</h3>
 
-<div>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+
+    <HeadOutlet />
+
+    <script defer>
+        document.addEventListener('htmx:configRequest', function(evt) {
+            if (evt.detail.verb !== 'get') {
+                const name = "@_csrfName";
+                const value = "@_csrfToken";
+                evt.detail.parameters[name] = value;
+            }
+        });
+    </script>
+</head>
+<body>
     @Body
-</div>
+</body>
+</html>
 
 @code {
+    private string? _csrfToken;
+    private string? _csrfName;
+
+    protected override void OnInitialized()
+    {
+        var token = Antiforgery.GetAntiforgeryToken();
+        _csrfToken = token?.Value;
+        _csrfName = token?.FormFieldName;
+    }
 
 }
