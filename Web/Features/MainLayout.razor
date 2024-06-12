@@ -11,9 +11,12 @@
     <base href="/" />
 
     <HeadOutlet />
-    <link href="lib/bulma/bulma@1.0.1.css" rel="stylesheet" />
+    @* <link href="lib/bulma/bulma@1.0.1.css" rel="stylesheet" /> *@
+    <link href="lib/bootstrap/bootstrap@5.3.3.css" rel="stylesheet" />
 
-    <script defer src="lib/alpinejs/alpinejs@3.14.0.js"><script>
+    <script defer src="lib/alpinejs/alpinejs@3.14.0.js"></script>
+    <script defer src="lib/bootstrap/bootstrap@5.3.3.bundle.js"></script>
+    <script defer src="lib/bootstrap/color-mode-switcher.js"></script>
     <script defer>
         document.addEventListener('htmx:configRequest', function(evt) {
             if (evt.detail.verb !== 'get') {
