@@ -11,10 +11,10 @@ public class Product : IAuditable
     /// Sort of the main selling points of the product. This is an HTML string!
     /// </summary>
     public string? Summary { get; set; }
-    public ICollection<Ingredient>? Ingredients { get; set; }
     public int? NutritionInfoId { get; set; }
     public NutritionInfo? NutritionInfo { get; set; }
-
+    public ICollection<Ingredient>? Ingredients { get; set; }
+    public ICollection<FoodEntry>? FoodEntries { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }
