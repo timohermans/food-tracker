@@ -13,11 +13,11 @@ public class AhIngredientsPropertyExtractor : IAhPropertyExtractor
         _logger = logger;
     }
 
-    public ExtractResult Extract(IDocument element, ProductBuilder builder)
+    public ExtractResult Extract(IDocument document, ProductBuilder builder)
     {
         var ingredientIdentifier = "Ingrediënten:";
         var detailsSection = AhUtils.
-            QueryDetailsSection(element.Body);
+            QueryDetailsSection(document.Body);
         var productInfoBlocks = detailsSection?
             .QuerySelectorAll(".product-info-content-block");
         var ingredientsElement = productInfoBlocks?

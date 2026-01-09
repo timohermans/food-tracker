@@ -14,15 +14,19 @@ public class AhNutritionExtractor : IAhPropertyExtractor
 
     private Dictionary<string, Action<NutritionInfo, string>> _nutritionExtractors = new()
     {
-        { "energie", (n, v) => n.Calories = NutritionTableConverter.ConvertToKiloCalories(v) },
-        { "vetten", (n, v) => n.Fats = double.Parse(v) },
-        { "waarvan verzadigde vetzuren", (n, v) => n.FatsSaturated = double.Parse(v) },
-        { "waarvan enkelvoudig onverzadigde vetzuren", (n, v) => n.FatsUnsaturated = double.Parse(v) },
-        { "koolhydraten", (n, v) => n.Carbs = double.Parse(v) },
-        { "waarvan suikers", (n, v) => n.Sugars = double.Parse(v) },
-        { "eiwitten", (n, v) => n.Proteines = double.Parse(v) },
-        { "vezels", (n, v) => n.Fibres = double.Parse(v) },
-        { "zout", (n, v) => n.Salts = double.Parse(v) },
+        { "energie", (n, v) => n.Calories = NutritionTableParser.ParseKiloCaloriesFrom(v) },
+        { "vetten", (n, v) => n.Fats = PortionAndUnitParser.Parse(v).Amount },
+        { "vet", (n, v) => n.Fats = PortionAndUnitParser.Parse(v).Amount },
+        { "waarvan verzadigde vetzuren", (n, v) => n.FatsSaturated = PortionAndUnitParser.Parse(v).Amount },
+        { "waarvan verzadigd", (n, v) => n.FatsSaturated = PortionAndUnitParser.Parse(v).Amount },
+        { "waarvan enkelvoudig onverzadigde vetzuren", (n, v) => n.FatsUnsaturated = PortionAndUnitParser.Parse(v).Amount },
+        { "waarvan onverzadigd", (n, v) => n.FatsUnsaturated = PortionAndUnitParser.Parse(v).Amount },
+        { "koolhydraten", (n, v) => n.Carbs = PortionAndUnitParser.Parse(v).Amount },
+        { "waarvan suikers", (n, v) => n.Sugars = PortionAndUnitParser.Parse(v).Amount },
+        { "eiwitten", (n, v) => n.Proteines = PortionAndUnitParser.Parse(v).Amount },
+        { "vezels", (n, v) => n.Fibres = PortionAndUnitParser.Parse(v).Amount },
+        { "zout", (n, v) => n.Salts = PortionAndUnitParser.Parse(v).Amount },
+        { "voedingsvezel", (n, v) => n.Fibres = PortionAndUnitParser.Parse(v).Amount },
     };
 
     public AhNutritionExtractor(ILogger<AhNutritionExtractor> logger)
@@ -30,9 +34,9 @@ public class AhNutritionExtractor : IAhPropertyExtractor
         _logger = logger;
     }
 
-    public ExtractResult Extract(IDocument element, ProductBuilder builder)
+    public ExtractResult Extract(IDocument document, ProductBuilder builder)
     {
-        var tables = element.QuerySelectorAll("table");
+        var tables = document.QuerySelectorAll("table");
         var nutritionTable = tables
             .FirstOrDefault(e => e.ClassList.Any(c => c.StartsWith("product-info-nutrition")));
 
@@ -65,38 +69,46 @@ public class AhNutritionExtractor : IAhPropertyExtractor
 
         _logger.LogInformation("Nutrition found on product {Title}", _productTitle);
 
-        var servingSizeAndUnit = ExtractSizeAndUnitFrom(columnHeaders[perUnitIndex].TextContent);
-        if (servingSizeAndUnit is null) return ExtractResult.Fail;
+        var servingSizeAndUnit = PortionAndUnitParser.Parse(columnHeaders[perUnitIndex].TextContent
+            .Replace("Per ", "", StringComparison.InvariantCultureIgnoreCase));
+        nutritionInfo.Per = servingSizeAndUnit.Amount;
+        nutritionInfo.PerUnit = servingSizeAndUnit.Unit;
 
-        var recommendedSize = ;
-
-        var ahNutrients = ahNutrition.nutrients ?? [];
-
-        var caloriesNutrient = ahNutrients.FirstOrDefault(n => n.type == NutrientType.Calories)?.value ?? "";
-        var groupKey = "kcal";
-        var kcalRegex = new Regex($"(?<{groupKey}>\\d+) kcal");
-        var kcalCapture = kcalRegex.Match(caloriesNutrient);
-        var kcalGroup = kcalCapture.Groups[groupKey];
-        var kcal = kcalGroup.Success ? double.Parse(kcalGroup.Value) : 0;
-
-        var nutrition = new NutritionInfo
+        var portionSizeRaw = document.QuerySelectorAll("[data-testhook=\"pdp-info-content\"] span")
+            .FirstOrDefault(span =>
+                span.FirstElementChild?.TextContent.Trim()
+                    .StartsWith("Portiegrootte:", StringComparison.OrdinalIgnoreCase) ?? false)
+            ?.LastElementChild?.TextContent.Trim();
+        if (portionSizeRaw is not null)
         {
-            PerUnit = servingSizeAndUnit.Value.Unit,
-            Per = Convert.ToInt32(servingSizeAndUnit.Value.Size),
-            PortionRecommended = Convert.ToInt32(recommendedSize.GetValueOrDefault().Size),
-            Calories = kcal,
-            Fats = ExtractSizeOf(NutrientType.Fats, ahNutrients),
-            FatsUnsaturated = ExtractSizeOf(NutrientType.FatsUnsaturated, ahNutrients),
-            FatsSaturated = ExtractSizeOf(NutrientType.FatsSaturated, ahNutrients),
-            Carbs = ExtractSizeOf(NutrientType.Carbs, ahNutrients),
-            Sugars = ExtractSizeOf(NutrientType.Sugars, ahNutrients),
-            Proteines = ExtractSizeOf(NutrientType.Proteins, ahNutrients),
-            Fibres = ExtractSizeOf(NutrientType.Fibres, ahNutrients),
-            Salts = ExtractSizeOf(NutrientType.Salts, ahNutrients),
-            PreparationState = ExtractPreparationState(ahNutrition.preparationState)
-        };
+            var (portionAmount, _) = PortionAndUnitParser.Parse(portionSizeRaw);
+            nutritionInfo.PortionRecommended = portionAmount;
+        }
+        
 
-        builder.AddNutritionInfo(nutrition);
+
+        // var ahNutrients = ahNutrition.nutrients ?? [];
+
+        // var caloriesNutrient = ahNutrients.FirstOrDefault(n => n.type == NutrientType.Calories)?.value ?? "";
+
+        // var nutrition = new NutritionInfo
+        // {
+        //     PerUnit = servingSizeAndUnit.Value.Unit,
+        //     Per = Convert.ToInt32(servingSizeAndUnit.Value.Size),
+        //     PortionRecommended = Convert.ToInt32(recommendedSize.GetValueOrDefault().Size),
+        //     Calories = kcal,
+        //     Fats = ExtractSizeOf(NutrientType.Fats, ahNutrients),
+        //     FatsUnsaturated = ExtractSizeOf(NutrientType.FatsUnsaturated, ahNutrients),
+        //     FatsSaturated = ExtractSizeOf(NutrientType.FatsSaturated, ahNutrients),
+        //     Carbs = ExtractSizeOf(NutrientType.Carbs, ahNutrients),
+        //     Sugars = ExtractSizeOf(NutrientType.Sugars, ahNutrients),
+        //     Proteines = ExtractSizeOf(NutrientType.Proteins, ahNutrients),
+        //     Fibres = ExtractSizeOf(NutrientType.Fibres, ahNutrients),
+        //     Salts = ExtractSizeOf(NutrientType.Salts, ahNutrients),
+        //     PreparationState = ExtractPreparationState(ahNutrition.preparationState)
+        // };
+
+        builder.AddNutritionInfo(nutritionInfo);
         return ExtractResult.Success;
     }
 
@@ -124,45 +136,6 @@ public class AhNutritionExtractor : IAhPropertyExtractor
         return ahObject;
     }
 
-    private double? ExtractSizeOf(string type, Nutrient[]? ahNutrients)
-    {
-        var nutrient = ahNutrients?.FirstOrDefault(n => n.type == type)?.value ?? "";
-        return ExtractSizeAndUnitFrom(nutrient)?.Size;
-    }
-
-    private (double Size, Unit Unit)? ExtractSizeAndUnitFrom(string? text)
-    {
-        if (text is null) return null;
-        var servingSizeAndUnit = text.Split(' ', StringSplitOptions.RemoveEmptyEntries) ?? [];
-        if (servingSizeAndUnit.Length != 2)
-        {
-            _logger.LogError("{Title}: Unknown serving size. Contains more parts than unit and size: {Value}",
-                _productTitle, text);
-            return null;
-        }
-
-        Unit? servingUnit = servingSizeAndUnit.Last().ToLower() switch
-        {
-            "gram" or "g" => Unit.Grams,
-            "milliliter" => Unit.Milliliters,
-            _ => null
-        };
-
-        if (!servingUnit.HasValue)
-        {
-            _logger.LogError("{Title}: Unknown serving unit. {Value}", _productTitle, text);
-            return null;
-        }
-
-        if (!double.TryParse(servingSizeAndUnit[0], CultureInfo.InvariantCulture, out double servingSize))
-        {
-            _logger.LogError("{Title}: Serving size is not a number (first part): {Value}", _productTitle, text);
-            return null;
-        }
-
-        return (servingSize, servingUnit.Value);
-    }
-
     private PreparationState? ExtractPreparationState(string? preparationState)
     {
         PreparationState? state = preparationState?.ToLower() switch
@@ -179,18 +152,5 @@ public class AhNutritionExtractor : IAhPropertyExtractor
         }
 
         return state;
-    }
-
-    private static class NutrientType
-    {
-        public const string Calories = "ENER-";
-        public const string Fats = "FAT";
-        public const string FatsSaturated = "FASAT";
-        public const string FatsUnsaturated = "X_FUNS";
-        public const string Carbs = "CHOAVL";
-        public const string Sugars = "SUGAR-";
-        public const string Fibres = "FIBTG";
-        public const string Proteins = "PRO-";
-        public const string Salts = "SALTEQ";
     }
 }

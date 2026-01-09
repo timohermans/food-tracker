@@ -2,9 +2,9 @@ using System.Text.RegularExpressions;
 
 namespace Scraper.UseCases.ExtractProductFromHtml.PropertyExtractors.Shared;
 
-public static class NutritionTableConverter
+public static class NutritionTableParser
 {
-    public static double ConvertToKiloCalories(string caloriesText)
+    public static double ParseKiloCaloriesFrom(string caloriesText)
     {
         if (double.TryParse(caloriesText, out var simpleCalories))
         {

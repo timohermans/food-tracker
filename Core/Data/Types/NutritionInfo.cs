@@ -14,8 +14,8 @@ public enum PreparationState {
 public class NutritionInfo
 {
     public int Id { get; set; }
-    public int Per { get; set; } // "100"
-    public int? PortionRecommended { get; set; }
+    public double Per { get; set; } // "100"
+    public double? PortionRecommended { get; set; }
     public PreparationState? PreparationState {get; set;}
     public Unit PerUnit { get; set; } // "grams"
     public double Calories { get; set; }
