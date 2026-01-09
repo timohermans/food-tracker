@@ -15,7 +15,7 @@ public class AhPricePropertyExtractor : IAhPropertyExtractor
     {
         var priceElement = AhUtils
             .QueryHeroSection(document.Body)?
-            .QuerySelector("[data-testhook=\"price-amount\"]");
+            .QuerySelector("[data-testid=\"price-amount\"]");
         if (priceElement is null)
         {
             _logger.LogWarning("No price found.");

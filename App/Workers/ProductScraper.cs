@@ -79,9 +79,10 @@ internal class ProductScraper(FoodContext db, ILogger<ProductScraper> logger) : 
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.3497.92 Safari/537.36",
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
 ];
-        var browser = await playwright.Firefox.LaunchAsync(new BrowserTypeLaunchOptions
+        var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
         {
-            Headless = true
+            Headless = true,
+            ExecutablePath = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
         });
         var context = await browser.NewContextAsync(new BrowserNewContextOptions
         {

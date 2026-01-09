@@ -82,8 +82,9 @@ public class WebsiteScrapeUseCase(FoodContext db, ILogger<WebsiteScrapeUseCase> 
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.3497.92 Safari/537.36",
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
 ];
-        var browser = await playwright.Firefox.LaunchAsync(new BrowserTypeLaunchOptions
+        var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
         {
+            ExecutablePath = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
             Headless = true
         });
         var context = await browser.NewContextAsync(new BrowserNewContextOptions
@@ -99,7 +100,7 @@ public class WebsiteScrapeUseCase(FoodContext db, ILogger<WebsiteScrapeUseCase> 
     private async Task Throttle(ProductScrapeJob job)
     {
         var random = new Random();
-        var delay = random.Next(5000, 10000);
+        var delay = random.Next(500, 1000);
         logger.LogInformation("Job {Url}: Throttling for {Delay} milliseconds", job.Url, delay);
         await Task.Delay(delay);
     }

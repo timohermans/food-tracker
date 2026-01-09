@@ -38,15 +38,17 @@ public class FoodContext : DbContext
             .ToList()
             .ForEach(entry =>
             {
+                var now = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
+                
                 if (entry.State == EntityState.Added)
                 {
-                    entry.Entity.CreatedAt = DateTime.UtcNow;
-                    entry.Entity.UpdatedAt = DateTime.UtcNow;
+                    entry.Entity.CreatedAt = now;
+                    entry.Entity.UpdatedAt = now;
                 }
 
                 if (entry.State == EntityState.Modified)
                 {
-                    entry.Entity.UpdatedAt = DateTime.Now;
+                    entry.Entity.UpdatedAt = now;
                 }
             });
     }

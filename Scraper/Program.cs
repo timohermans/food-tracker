@@ -26,7 +26,7 @@ builder.Services.AddPropertyExtractors();
 builder.Services.AddUseCases();
 
 builder.Services.AddDbContext<FoodContext>(
-    opt => opt.UseSqlServer(config.GetConnectionString("Default")));
+    opt => opt.UseNpgsql(config.GetConnectionString("Default")));
 
 builder.Services.AddWindowsService(options =>
 {
@@ -40,22 +40,22 @@ var host = builder.Build();
 var scheduler = host.Services.GetRequiredService<IScheduler>();
 
 var findJob = scheduler.Schedule<ProductsFindToScrapeUseCase>()
-    .DailyAt(0, 0)
-    .PreventOverlapping(nameof(ProductsFindToScrapeUseCase));
+     .DailyAt(0, 0)
+     .PreventOverlapping(nameof(ProductsFindToScrapeUseCase));
 
 var websiteScrapeJob = scheduler.Schedule<WebsiteScrapeUseCase>()
-    .EveryMinute()
-    .PreventOverlapping(nameof(WebsiteScrapeUseCase));
+     .EveryMinute()
+     .PreventOverlapping(nameof(WebsiteScrapeUseCase));
 
 var extractJob = scheduler.Schedule<ExtractProductFromHtmlUseCase>()
-    .EveryMinute()
+    .HourlyAt(0)
     .PreventOverlapping(nameof(ExtractProductFromHtmlUseCase));
 
 if (env.IsDevelopment())
 {
-    findJob.RunOnceAtStart();
-    websiteScrapeJob.RunOnceAtStart();
-    extractJob.RunOnceAtStart();
+    // findJob.Once().RunOnceAtStart();
+    // websiteScrapeJob.Once().RunOnceAtStart();
+    extractJob.Once().RunOnceAtStart();
 }
 
 host.Run();

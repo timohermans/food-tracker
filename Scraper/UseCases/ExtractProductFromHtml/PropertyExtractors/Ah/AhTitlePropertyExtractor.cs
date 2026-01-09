@@ -21,7 +21,7 @@ public class AhTitlePropertyExtractor : IAhPropertyExtractor
             return ExtractResult.Fail;
         }
 
-        builder.Title(titleElement.TextContent);
+        builder.Title(titleElement.TextContent.Trim());
         return ExtractResult.Success;
     }
 }

@@ -25,6 +25,7 @@ public class ExtractProductFromHtmlUseCase(
             var jobIds = await db.ScrapeJobs
                 .Where(j => j.ErrorMessage == null && j.Content != null && j.Product == null)
                 .Select(j => j.Id)
+                .Take(1)
                 .ToListAsync(Token);
 
             logger.LogInformation("{Count} need extracting", jobIds.Count);

@@ -18,6 +18,42 @@ public class AhNutritionExtractor : IAhPropertyExtractor
 
     public ExtractResult Extract(IDocument element, ProductBuilder builder)
     {
+        var tables = element.QuerySelectorAll("table");
+        var nutritionTable = tables
+            .FirstOrDefault(e => e.ClassList.Any(c => c.StartsWith("product-info-nutrition")));
+
+        if (nutritionTable == null)
+        {
+            return ExtractResult.NotFound;
+        }
+        
+        // first loop through the table head to find the per unit index
+        var columnHeaders = nutritionTable.QuerySelectorAll("thead > tr > th").ToList();
+        var perUnitIndex = columnHeaders.FindIndex(th => th.TextContent.Contains("100"));
+        
+        var rows = nutritionTable.QuerySelectorAll("tbody > tr").ToList();
+        
+        Dictionary<string, Action<NutritionInfo, string>> nutritionExtractors = new()
+        {
+            { "energie", (n, v) => n.Calories = double.Parse(v) },
+            { "vetten", (n, v) => n.Fats = double.Parse(v) },
+            { "waarvan verzadigde vetzuren", (n, v) => n.FatsSaturated = double.Parse(v) },
+            { "waarvan enkelvoudig onverzadigde vetzuren", (n, v) => n.FatsUnsaturated = double.Parse(v) },
+            { "koolhydraten", (n, v) => n.Carbs = double.Parse(v) },
+            { "waarvan suikers", (n, v) => n.Sugars = double.Parse(v) },
+            { "eiwitten", (n, v) => n.Proteines = double.Parse(v) },
+            { "vezels", (n, v) => n.Fibres = double.Parse(v) },
+            { "zout", (n, v) => n.Salts = double.Parse(v) },
+        };
+
+        foreach (var row in rows)
+        {
+            var cells = row.QuerySelectorAll("td").ToList();
+            var nutritionName = cells[0].TextContent.Trim().ToLower();
+            var valueText = cells[perUnitIndex].TextContent.Trim().ToLower();
+            
+        }
+        
         const string scriptIdentifier = "window.__INITIAL_STATE__";
         var scriptElement = element.Scripts.FirstOrDefault(s => s.InnerHtml.Contains(scriptIdentifier));
         var script = scriptElement?.InnerHtml.Split(["\n", "\r\n"], StringSplitOptions.RemoveEmptyEntries)
@@ -34,7 +70,6 @@ public class AhNutritionExtractor : IAhPropertyExtractor
         script = script.Replace(scriptIdentifier, "")
         .Replace("undefined", "null")
         .Trim();
-
 
         var ahObject = DeserializeToAhObject(script);
 

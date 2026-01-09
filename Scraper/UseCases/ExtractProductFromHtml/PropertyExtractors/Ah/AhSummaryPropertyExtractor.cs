@@ -15,7 +15,7 @@ public class AhSummaryPropertyExtractor : IAhPropertyExtractor
     {
         var summaryElement = AhUtils
             .QueryHeroSection(document.Body)?
-            .QuerySelector("[data-testhook=\"product-summary\"]");
+            .QuerySelector("[data-testid=\"product-summary\"]");
         if (summaryElement is null)
         {
             _logger.LogError("No summary element found.");
