@@ -3,6 +3,7 @@ using System.Text.Json;
 using Core.Data.Types;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using Scraper.UseCases.ExtractProductFromHtml.PropertyExtractors.Shared;
 
 namespace Scraper.UseCases.ExtractProductFromHtml.PropertyExtractors.Ah;
 
@@ -10,6 +11,19 @@ public class AhNutritionExtractor : IAhPropertyExtractor
 {
     private string? _productTitle = null;
     private readonly ILogger<AhNutritionExtractor> _logger;
+
+    private Dictionary<string, Action<NutritionInfo, string>> _nutritionExtractors = new()
+    {
+        { "energie", (n, v) => n.Calories = NutritionTableConverter.ConvertToKiloCalories(v) },
+        { "vetten", (n, v) => n.Fats = double.Parse(v) },
+        { "waarvan verzadigde vetzuren", (n, v) => n.FatsSaturated = double.Parse(v) },
+        { "waarvan enkelvoudig onverzadigde vetzuren", (n, v) => n.FatsUnsaturated = double.Parse(v) },
+        { "koolhydraten", (n, v) => n.Carbs = double.Parse(v) },
+        { "waarvan suikers", (n, v) => n.Sugars = double.Parse(v) },
+        { "eiwitten", (n, v) => n.Proteines = double.Parse(v) },
+        { "vezels", (n, v) => n.Fibres = double.Parse(v) },
+        { "zout", (n, v) => n.Salts = double.Parse(v) },
+    };
 
     public AhNutritionExtractor(ILogger<AhNutritionExtractor> logger)
     {
@@ -26,75 +40,35 @@ public class AhNutritionExtractor : IAhPropertyExtractor
         {
             return ExtractResult.NotFound;
         }
-        
+
         // first loop through the table head to find the per unit index
         var columnHeaders = nutritionTable.QuerySelectorAll("thead > tr > th").ToList();
         var perUnitIndex = columnHeaders.FindIndex(th => th.TextContent.Contains("100"));
-        
-        var rows = nutritionTable.QuerySelectorAll("tbody > tr").ToList();
-        
-        Dictionary<string, Action<NutritionInfo, string>> nutritionExtractors = new()
-        {
-            { "energie", (n, v) => n.Calories = double.Parse(v) },
-            { "vetten", (n, v) => n.Fats = double.Parse(v) },
-            { "waarvan verzadigde vetzuren", (n, v) => n.FatsSaturated = double.Parse(v) },
-            { "waarvan enkelvoudig onverzadigde vetzuren", (n, v) => n.FatsUnsaturated = double.Parse(v) },
-            { "koolhydraten", (n, v) => n.Carbs = double.Parse(v) },
-            { "waarvan suikers", (n, v) => n.Sugars = double.Parse(v) },
-            { "eiwitten", (n, v) => n.Proteines = double.Parse(v) },
-            { "vezels", (n, v) => n.Fibres = double.Parse(v) },
-            { "zout", (n, v) => n.Salts = double.Parse(v) },
-        };
 
+        var rows = nutritionTable.QuerySelectorAll("tbody > tr").ToList();
+
+        var nutritionInfo = new NutritionInfo();
         foreach (var row in rows)
         {
             var cells = row.QuerySelectorAll("td").ToList();
             var nutritionName = cells[0].TextContent.Trim().ToLower();
             var valueText = cells[perUnitIndex].TextContent.Trim().ToLower();
-            
-        }
-        
-        const string scriptIdentifier = "window.__INITIAL_STATE__";
-        var scriptElement = element.Scripts.FirstOrDefault(s => s.InnerHtml.Contains(scriptIdentifier));
-        var script = scriptElement?.InnerHtml.Split(["\n", "\r\n"], StringSplitOptions.RemoveEmptyEntries)
-            .FirstOrDefault(l => l.Contains(scriptIdentifier));
 
-        if (script is null)
-        {
-            _logger.LogError("To my knowledge, all AH pages should have this json object");
-            return ExtractResult.Fail;
-        }
+            if (!_nutritionExtractors.TryGetValue(nutritionName, out var extractor))
+            {
+                _logger.LogWarning($"No extractor found for nutrition: {nutritionName}");
+                continue;
+            }
 
-        var objStart = script.IndexOf('{');
-        script = script.Substring(objStart, script.Length - objStart);
-        script = script.Replace(scriptIdentifier, "")
-        .Replace("undefined", "null")
-        .Trim();
-
-        var ahObject = DeserializeToAhObject(script);
-
-        if (ahObject is null)
-        {
-            _logger.LogError("To my knowledge, all AH pages should have this json object");
-            return ExtractResult.Fail;
-        }
-
-        _productTitle = ahObject.Title;
-
-        var ahNutrition = ahObject?.product?.card?.meta?.nutritions?.FirstOrDefault(n => n.basisQuantity?.Contains("100") ?? false);
-
-        if (ahNutrition is null)
-        {
-            _logger.LogInformation("Product {Title} has no nutrition info. Skipping", _productTitle);
-            return ExtractResult.Success;
+            extractor(nutritionInfo, valueText);
         }
 
         _logger.LogInformation("Nutrition found on product {Title}", _productTitle);
 
-        var servingSizeAndUnit = ExtractSizeAndUnitFrom(ahNutrition.basisQuantity);
+        var servingSizeAndUnit = ExtractSizeAndUnitFrom(columnHeaders[perUnitIndex].TextContent);
         if (servingSizeAndUnit is null) return ExtractResult.Fail;
 
-        var recommendedSize = ExtractSizeAndUnitFrom(ahNutrition.servingSizeDescription);
+        var recommendedSize = ;
 
         var ahNutrients = ahNutrition.nutrients ?? [];
 
@@ -162,7 +136,8 @@ public class AhNutritionExtractor : IAhPropertyExtractor
         var servingSizeAndUnit = text.Split(' ', StringSplitOptions.RemoveEmptyEntries) ?? [];
         if (servingSizeAndUnit.Length != 2)
         {
-            _logger.LogError("{Title}: Unknown serving size. Contains more parts than unit and size: {Value}", _productTitle, text);
+            _logger.LogError("{Title}: Unknown serving size. Contains more parts than unit and size: {Value}",
+                _productTitle, text);
             return null;
         }
 
