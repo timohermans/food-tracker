@@ -84,56 +84,25 @@ public class AhNutritionExtractor : IAhPropertyExtractor
             var (portionAmount, _) = PortionAndUnitParser.Parse(portionSizeRaw);
             nutritionInfo.PortionRecommended = portionAmount;
         }
-        
 
-
-        // var ahNutrients = ahNutrition.nutrients ?? [];
-
-        // var caloriesNutrient = ahNutrients.FirstOrDefault(n => n.type == NutrientType.Calories)?.value ?? "";
-
-        // var nutrition = new NutritionInfo
-        // {
-        //     PerUnit = servingSizeAndUnit.Value.Unit,
-        //     Per = Convert.ToInt32(servingSizeAndUnit.Value.Size),
-        //     PortionRecommended = Convert.ToInt32(recommendedSize.GetValueOrDefault().Size),
-        //     Calories = kcal,
-        //     Fats = ExtractSizeOf(NutrientType.Fats, ahNutrients),
-        //     FatsUnsaturated = ExtractSizeOf(NutrientType.FatsUnsaturated, ahNutrients),
-        //     FatsSaturated = ExtractSizeOf(NutrientType.FatsSaturated, ahNutrients),
-        //     Carbs = ExtractSizeOf(NutrientType.Carbs, ahNutrients),
-        //     Sugars = ExtractSizeOf(NutrientType.Sugars, ahNutrients),
-        //     Proteines = ExtractSizeOf(NutrientType.Proteins, ahNutrients),
-        //     Fibres = ExtractSizeOf(NutrientType.Fibres, ahNutrients),
-        //     Salts = ExtractSizeOf(NutrientType.Salts, ahNutrients),
-        //     PreparationState = ExtractPreparationState(ahNutrition.preparationState)
-        // };
+        var preparationStateText = "waarden gelden voor";
+        var preparationStateRegex = new Regex(@$"{preparationStateText} het (\w+) product", RegexOptions.Compiled);
+        var preparationStateContent = document.QuerySelectorAll("[data-testhook=\"pdp-info-content\"] p")
+            .FirstOrDefault(span =>
+                span.TextContent.Trim().Contains(preparationStateText, StringComparison.OrdinalIgnoreCase))
+            ?.TextContent.Trim().ToLower();
+        if (preparationStateContent is not null)
+        {
+            var match = preparationStateRegex.Match(preparationStateContent);
+            if (match.Success)
+            {
+                var prepState = match.Groups[1].Value;
+                nutritionInfo.PreparationState = ExtractPreparationState(prepState);
+            }
+        }
 
         builder.AddNutritionInfo(nutritionInfo);
         return ExtractResult.Success;
-    }
-
-    private AhObject? DeserializeToAhObject(string script)
-    {
-        AhObject? ahObject = null;
-
-        try
-        {
-            ahObject = JsonSerializer.Deserialize<AhObject>(script);
-        }
-        catch (ArgumentNullException ex)
-        {
-            _logger.LogError(ex, "To my knowledge, all AH pages should have this json object");
-        }
-        catch (JsonException ex)
-        {
-            _logger.LogError(ex, "The JSON is somehow different than the one I tested in the unit tests");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Something must have gone wrong that I haven't foreseen");
-        }
-
-        return ahObject;
     }
 
     private PreparationState? ExtractPreparationState(string? preparationState)
@@ -142,7 +111,6 @@ public class AhNutritionExtractor : IAhPropertyExtractor
         {
             "onbereide" => PreparationState.Unprepared,
             "bereide" => PreparationState.Prepared,
-            "" => null,
             _ => null
         };
 
