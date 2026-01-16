@@ -292,14 +292,14 @@ public class AhPropertyExtractorTests : ExtractorTestBase
         Assert.That(product.NutritionInfo!.Per, Is.EqualTo(100));
         Assert.That(product.NutritionInfo.PerUnit, Is.EqualTo(Unit.Milliliters));
         Assert.That(product.NutritionInfo.PortionRecommended, Is.EqualTo(200));
-        Assert.That(product.NutritionInfo.Fats, Is.EqualTo(1.5));
+        Assert.That(product.NutritionInfo.Fats, Is.EqualTo(1.6));
         Assert.That(product.NutritionInfo.FatsSaturated, Is.EqualTo(1.1));
-        Assert.That(product.NutritionInfo.FatsUnsaturated, Is.EqualTo(0.4));
+        Assert.That(product.NutritionInfo.FatsUnsaturated, Is.EqualTo(0.5));
         Assert.That(product.NutritionInfo.Calories, Is.EqualTo(48));
-        Assert.That(product.NutritionInfo.Carbs, Is.EqualTo(5));
-        Assert.That(product.NutritionInfo.Sugars, Is.EqualTo(5));
+        Assert.That(product.NutritionInfo.Carbs, Is.EqualTo(4.7));
+        Assert.That(product.NutritionInfo.Sugars, Is.EqualTo(4.7));
         Assert.That(product.NutritionInfo.Fibres, Is.EqualTo(0));
-        Assert.That(product.NutritionInfo.Proteines, Is.EqualTo(3.5));
+        Assert.That(product.NutritionInfo.Proteines, Is.EqualTo(3.6));
         Assert.That(product.NutritionInfo.Salts, Is.EqualTo(0.13));
         Assert.That(product.NutritionInfo.PreparationState, Is.EqualTo(PreparationState.Unprepared));
     }

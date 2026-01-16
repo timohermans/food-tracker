@@ -52,9 +52,9 @@ public class ExtractProductFromHtmlUseCaseTests : IntegrationTestBase
             var product = job!.Product!;
             product.Title.Should().Be("AH Aardappelballetjes");
             product.Ingredients.Should().Satisfy(
-                i => i.Name == "88% aardappel",
+                i => i.Name == "89% aardappel",
                 i => i.Name == "6,4% aardappelvlok",
-                i => i.Name == "plantaardige olie (4,7% zonnebloem, raap)",
+                i => i.Name == "plantaardige olie (4,1% zonnebloem, raap)",
                 i => i.Name == "zout",
                 i => i.Name == "stabilisator (hydroxypropylmethylcellulose [E464])",
                 i => i.Name == "specerijenextract"

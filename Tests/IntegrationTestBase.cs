@@ -14,7 +14,7 @@ public class IntegrationTestBase
     public async Task BeforeAllAsync()
     {
         _options = new DbContextOptionsBuilder<FoodContext>()
-            .UseSqlServer("Server=localhost;User Id=sa;Password=P@ssw0rd;Initial Catalog=FoodTrackerTest;TrustServerCertificate=True")
+            .UseNpgsql("Host=localhost;Port=5432;Database=food-test;Username=dev;Password=dev")
             .Options;
 
         await using var db = GetDb();
@@ -27,11 +27,11 @@ public class IntegrationTestBase
         await using var db = GetDb();
 
         await db.Database.ExecuteSqlRawAsync("""
-            delete from ScrapeJobs;
-            delete from ProductIngredients;
-            delete from Ingredients;
-            delete from Products;
-            delete from NutritionInfos;
+            delete from "ScrapeJobs";
+            delete from "ProductIngredients";
+            delete from "Ingredients";
+            delete from "Products";
+            delete from "NutritionInfos";
             """);
 
     }

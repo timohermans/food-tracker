@@ -4,5 +4,5 @@ namespace Scraper.UseCases.ExtractProductFromHtml.PropertyExtractors;
 
 public interface IProductPropertyExtractor
 {
-    public ExtractResult Extract(IDocument element, ProductBuilder builder);
+    public ExtractResult Extract(IDocument document, ProductBuilder builder);
 }
